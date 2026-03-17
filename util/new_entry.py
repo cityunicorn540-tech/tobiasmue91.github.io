@@ -37,28 +37,26 @@ def get_latest_git_added_file_any(base_dir):
     latest_files = {}
 
     for directory in ["tools", "games"]:
-        try:
-            os.chdir(base_dir)
-            result = subprocess.run(
-                ["git", "log", "--diff-filter=A", "--name-only", "--pretty=format:%ct", directory],
-                capture_output=True, text=True, check=True
-            )
-            lines = [line.strip() for line in result.stdout.split('\n') if line.strip()]
+        entry_type = "tool" if directory == "tools" else "game"
+        json_file = base_dir / "data" / f"{entry_type}s.json"
+        existing_ids = set()
+        if json_file.exists():
+            with open(json_file, 'r', encoding='utf-8') as f:
+                existing_ids = {e.get('id') for e in json.load(f)}
 
-            # Lines alternate: timestamp, filename, timestamp, filename...
-            for i in range(0, len(lines), 2):
-                if i + 1 < len(lines):
-                    timestamp = int(lines[i])
-                    filename = lines[i + 1]
-                    latest_files[filename] = (timestamp, "tool" if directory == "tools" else "game")
-                    break  # Get only the most recent from this directory
-        except (subprocess.CalledProcessError, ValueError):
+        dir_path = base_dir / directory
+        if not dir_path.exists():
             continue
+
+        for html_file in dir_path.glob("*.html"):
+            if html_file.stem not in existing_ids:
+                # Use file modification time to determine the newest unregistered file
+                mtime = html_file.stat().st_mtime
+                latest_files[str(html_file.relative_to(base_dir))] = (mtime, entry_type)
 
     if not latest_files:
         return None, None
 
-    # Find the file with the most recent timestamp
     latest_file = max(latest_files.items(), key=lambda x: x[1][0])
     return latest_file[0], latest_file[1][1]
 
