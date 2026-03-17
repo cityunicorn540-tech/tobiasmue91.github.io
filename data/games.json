@@ -1309,5 +1309,23 @@
       "singleplayer",
       "fast-paced"
     ]
+  },
+  {
+    "id": "push_mine",
+    "title": "Push Mine",
+    "description": "PushMine is a mobile-first incremental mining game powered by AI face detection. Do real push-ups to mine deeper, earn coins, unlock upgrades, and prestige your way to the abyss.",
+    "url": "games\\push_mine.html",
+    "screenshot": "screenshots/screenshot_259.webp",
+    "type": "game",
+    "aiPowered": true,
+    "featured": true,
+    "date": "2026-03-17",
+    "categories": [
+      "simulation"
+    ],
+    "tags": [
+      "singleplayer",
+      "relaxing"
+    ]
   }
 ]
