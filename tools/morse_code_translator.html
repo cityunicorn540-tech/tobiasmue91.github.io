@@ -1,157 +1,696 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon"
-          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <meta name="description"
-          content="Translate text to Morse code and vice versa with this advanced, user-friendly tool.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Morse Code Translator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 font-sans">
-<div class="container mx-auto p-4 max-w-2xl"><h1 class="text-3xl font-bold mb-4 text-center">Morse Code Translator</h1>
-    <div class="mb-4"><textarea id="input" class="w-full p-2 border rounded" rows="4"
-                                placeholder="Enter text or Morse code" autofocus></textarea></div>
-    <div class="flex justify-between mb-4">
-        <button id="swapBtn" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">⇅ Swap</button>
-        <button id="translateBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Translate</button>
-        <button id="clearBtn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Clear</button>
-    </div>
-    <div class="mb-4"><textarea id="output" class="w-full p-2 border rounded" rows="4" readonly></textarea></div>
-    <div class="flex justify-between">
-        <button id="playBtn" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">🔊 Play Morse
-        </button>
-        <button id="copyBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">📋 Copy Result</button>
-    </div>
-    <div id="morseGuide" class="mt-4 text-sm"></div>
-</div>
-<script>const morseCode = {
-    'A': '.-',
-    'B': '-...',
-    'C': '-.-.',
-    'D': '-..',
-    'E': '.',
-    'F': '..-.',
-    'G': '--.',
-    'H': '....',
-    'I': '..',
-    'J': '.---',
-    'K': '-.-',
-    'L': '.-..',
-    'M': '--',
-    'N': '-.',
-    'O': '---',
-    'P': '.--.',
-    'Q': '--.-',
-    'R': '.-.',
-    'S': '...',
-    'T': '-',
-    'U': '..-',
-    'V': '...-',
-    'W': '.--',
-    'X': '-..-',
-    'Y': '-.--',
-    'Z': '--..',
-    '0': '-----',
-    '1': '.----',
-    '2': '..---',
-    '3': '...--',
-    '4': '....-',
-    '5': '.....',
-    '6': '-....',
-    '7': '--...',
-    '8': '---..',
-    '9': '----.',
-    '.': '.-.-.-',
-    ',': '--..--',
-    '?': '..--..',
-    '!': '-.-.--',
-    ' ': ' '
-};
-const reverseMorseCode = Object.fromEntries(Object.entries(morseCode).map(([k, v]) => [v, k]));
-const input = document.getElementById('input'), output = document.getElementById('output');
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-function textToMorse(text) {
-    return text.toUpperCase().split('').map(char => morseCode[char] || char).join(' ');
-}
-
-function morseToText(morse) {
-    return morse.split(' ').map(code => reverseMorseCode[code] || code).join('');
-}
-
-function translate() {
-    const text = input.value;
-    output.value = /[.-]/.test(text) ? morseToText(text) : textToMorse(text);
-}
-
-function swap() {
-    [input.value, output.value] = [output.value, input.value];
-    translate();
-}
-
-function clear() {
-    input.value = '';
-    output.value = '';
-    input.focus();
-}
-
-function copyToClipboard() {
-    output.select();
-    document.execCommand('copy');
-    const originalText = copyBtn.textContent;
-    copyBtn.textContent = 'Copied!';
-    setTimeout(() => copyBtn.textContent = originalText, 2000);
-}
-
-function playMorse() {
-    const audio = new (AudioContext || webkitAudioContext)(), dot = 0.1, dash = dot * 3, letterSpace = dot * 3,
-        wordSpace = dot * 7;
-    let time = audio.currentTime;
-    const morse = output.value.replace(/[^.-\s]/g, '');
-    morse.split('').forEach(char => {
-        if (char === '.') {
-            const osc = audio.createOscillator();
-            osc.type = 'sine';
-            osc.frequency.value = 600;
-            osc.start(time);
-            osc.stop(time + dot);
-            const gain = audio.createGain();
-            gain.gain.setValueAtTime(1, time);
-            gain.gain.setValueAtTime(0, time + dot);
-            osc.connect(gain);
-            gain.connect(audio.destination);
-            time += dot;
-        } else if (char === '-') {
-            const osc = audio.createOscillator();
-            osc.type = 'sine';
-            osc.frequency.value = 600;
-            osc.start(time);
-            osc.stop(time + dash);
-            const gain = audio.createGain();
-            gain.gain.setValueAtTime(1, time);
-            gain.gain.setValueAtTime(0, time + dash);
-            osc.connect(gain);
-            gain.connect(audio.destination);
-            time += dash;
-        } else if (char === ' ') {
-            time += letterSpace;
-        } else if (char == '/') {
-            time += wordSpace;
+        :root {
+            --bg: #0f1117;
+            --surface: #1a1d27;
+            --border: #2a2d3a;
+            --primary: #4f8ff7;
+            --text: #e2e4e9;
+            --text-muted: #8b8fa3;
+            --error: #e05555;
+            --success: #3dba6f;
+            --warning: #d4a843;
         }
-        time += dot;
-    });
-}
 
-document.getElementById('translateBtn').addEventListener('click', translate);
-document.getElementById('swapBtn').addEventListener('click', swap);
-document.getElementById('clearBtn').addEventListener('click', clear);
-document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
-document.getElementById('playBtn').addEventListener('click', playMorse);
-input.addEventListener('input', translate);
-const morseGuide = document.getElementById('morseGuide');
-morseGuide.innerHTML = Object.entries(morseCode).map(([char, code]) => `<span class="inline-block mr-2 mb-1">${char}: ${code}</span>`).join('');</script>
-<script src="../sidebar.js"></script>
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-size: 15px;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 32px 20px 48px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 24px;
+            letter-spacing: -0.3px;
+        }
+
+        .mode-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .panel-wrapper {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        textarea, .output-panel, .input-overlay {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+        }
+
+        textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .output-panel {
+            user-select: text;
+            cursor: text;
+        }
+
+        .output-panel:empty::before {
+            content: 'Translation appears here';
+            color: var(--text-muted);
+        }
+
+        .input-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            z-index: 2;
+        }
+
+        .active-char {
+            background: var(--primary);
+            color: #fff;
+            border-radius: 2px;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            color: #fff;
+            background: var(--surface);
+            transition: opacity 0.15s;
+        }
+
+        button:hover { opacity: 0.85; }
+        button:active { opacity: 0.7; }
+
+        .btn-swap { background: var(--warning); border-color: var(--warning); }
+        .btn-translate { background: var(--primary); border-color: var(--primary); }
+        .btn-clear { background: var(--error); border-color: var(--error); }
+        .btn-play { background: var(--primary); border-color: var(--primary); }
+        .btn-play.playing { background: var(--error); border-color: var(--error); }
+        .btn-copy { background: var(--success); border-color: var(--success); }
+
+        button.disabled-during-play {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .speed-control {
+            margin-bottom: 16px;
+        }
+
+        .speed-control label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .speed-control label span {
+            color: var(--text);
+            font-variant-numeric: tabular-nums;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .shortcut-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .reference-section h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .reference-section h3 {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+
+        .reference-section h3:first-of-type {
+            margin-top: 0;
+        }
+
+        .ref-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+            gap: 6px;
+        }
+
+        .ref-cell {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 8px 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.15s, background-color 0.3s ease;
+            user-select: none;
+        }
+
+        .ref-cell:hover {
+            border-color: var(--primary);
+        }
+
+        .ref-cell.flash {
+            background-color: var(--primary);
+        }
+
+        .ref-cell-char {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            display: block;
+            line-height: 1.3;
+        }
+
+        .ref-cell-morse {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            display: block;
+            line-height: 1.3;
+            margin-top: 2px;
+        }
+
+        .ref-cell.flash .ref-cell-morse {
+            color: #fff;
+        }
+
+        @media (max-width: 420px) {
+            .container { padding: 20px 12px 36px; }
+            h1 { font-size: 20px; }
+            button { padding: 8px 12px; font-size: 13px; }
+            .ref-grid { grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Morse Code Translator</h1>
+
+    <div class="mode-label" id="modeLabel">Text → Morse</div>
+
+    <div class="panel-wrapper">
+        <textarea id="input" placeholder="Enter text or Morse code" autofocus></textarea>
+        <div id="inputOverlay" class="input-overlay"></div>
+    </div>
+
+    <div class="button-row">
+        <button id="swapBtn" class="btn-swap disabled-target">⇅ Swap</button>
+        <button id="translateBtn" class="btn-translate disabled-target">Translate</button>
+        <button id="clearBtn" class="btn-clear disabled-target">Clear</button>
+    </div>
+
+    <div class="speed-control">
+        <label>Speed: <span id="wpmValue">15</span> WPM</label>
+        <input type="range" id="wpmSlider" min="5" max="30" value="15">
+    </div>
+
+    <div class="panel-wrapper">
+        <div id="output" class="output-panel"></div>
+    </div>
+
+    <div class="button-row">
+        <button id="playBtn" class="btn-play">▶ Play</button>
+        <button id="copyBtn" class="btn-copy">📋 Copy</button>
+    </div>
+
+    <div class="shortcut-hint" id="shortcutHint">Ctrl+Enter to play · Escape to stop</div>
+
+    <hr class="divider">
+
+    <div class="reference-section">
+        <h2>Reference</h2>
+        <h3>Letters</h3>
+        <div id="lettersGrid" class="ref-grid"></div>
+        <h3>Numbers</h3>
+        <div id="numbersGrid" class="ref-grid"></div>
+        <h3>Punctuation</h3>
+        <div id="punctGrid" class="ref-grid"></div>
+    </div>
+</div>
+
+<script>
+    // ========================================
+    // 1. Constants & Morse Mapping
+    // ========================================
+    const MORSE_MAP = {
+        'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....',
+        'I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.',
+        'Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-',
+        'Y':'-.--','Z':'--..','0':'-----','1':'.----','2':'..---','3':'...--','4':'....-',
+        '5':'.....','6':'-....','7':'--...','8':'---..','9':'----.','.'  :'.-.-.-',
+        ',':'--..--','?':'..--..','!':'-.-.--'
+    };
+
+    const REVERSE_MORSE = Object.fromEntries(
+        Object.entries(MORSE_MAP).map(([k, v]) => [v, k])
+    );
+
+    const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    const NUMBERS = '0123456789'.split('');
+    const PUNCTUATION = ['.', ',', '?', '!'];
+
+    // ========================================
+    // 2. DOM References
+    // ========================================
+    const inputEl = document.getElementById('input');
+    const inputOverlay = document.getElementById('inputOverlay');
+    const outputEl = document.getElementById('output');
+    const modeLabel = document.getElementById('modeLabel');
+    const swapBtn = document.getElementById('swapBtn');
+    const translateBtn = document.getElementById('translateBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const playBtn = document.getElementById('playBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const wpmSlider = document.getElementById('wpmSlider');
+    const wpmValue = document.getElementById('wpmValue');
+    const shortcutHint = document.getElementById('shortcutHint');
+
+    // ========================================
+    // 3. Translation Logic
+    // ========================================
+    let currentDirection = 'text'; // 'text' or 'morse'
+
+    function detectDirection(text) {
+        const trimmed = text.trim();
+        if (!trimmed) return 'text';
+        if (/^[.\-\s/]+$/.test(trimmed) && /[.\-]/.test(trimmed)) return 'morse';
+        return 'text';
+    }
+
+    function textToMorse(text) {
+        return text.toUpperCase().split(' ').map(word =>
+            word.split('').map(ch => MORSE_MAP[ch] || '').filter(Boolean).join(' ')
+        ).filter(Boolean).join(' / ');
+    }
+
+    function morseToText(morse) {
+        const normalized = morse.replace(/\s+/g, ' ').trim();
+        return normalized.split(' / ').map(word =>
+            word.split(' ').map(code => REVERSE_MORSE[code.trim()] || '').join('')
+        ).join(' ');
+    }
+
+    function translate() {
+        const raw = inputEl.value;
+        if (!raw.trim()) {
+            outputEl.textContent = '';
+            currentDirection = 'text';
+            modeLabel.textContent = 'Text → Morse';
+            return;
+        }
+        currentDirection = detectDirection(raw);
+        modeLabel.textContent = currentDirection === 'text' ? 'Text → Morse' : 'Morse → Text';
+        outputEl.textContent = currentDirection === 'text' ? textToMorse(raw) : morseToText(raw);
+    }
+
+    // ========================================
+    // 4. Audio Engine
+    // ========================================
+    let audioCtx = null;
+
+    function getAudioCtx() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
+    }
+
+    function scheduleCharAudio(ctx, dest, morse, startTime, dotDur) {
+        let t = startTime;
+        for (let i = 0; i < morse.length; i++) {
+            const dur = morse[i] === '.' ? dotDur : dotDur * 3;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = 600;
+            osc.connect(gain);
+            gain.connect(dest);
+            gain.gain.setValueAtTime(1, t);
+            gain.gain.setValueAtTime(1, t + dur - 0.005);
+            gain.gain.linearRampToValueAtTime(0, t + dur);
+            osc.start(t);
+            osc.stop(t + dur + 0.02);
+            t += dur;
+            if (i < morse.length - 1) t += dotDur; // intra-character gap
+        }
+        return t;
+    }
+
+    function playCharAudio(morse, wpm) {
+        const ctx = getAudioCtx();
+        const dotDur = 1.2 / wpm;
+        scheduleCharAudio(ctx, ctx.destination, morse, ctx.currentTime + 0.02, dotDur);
+    }
+
+    // ========================================
+    // 5. Playback Synchronization
+    // ========================================
+    let isPlaying = false;
+    let playbackTimeouts = [];
+    let masterGain = null;
+
+    function buildPlaybackItems(text, direction) {
+        const items = [];
+        let idx = 0;
+        if (direction === 'text') {
+            for (const ch of text) {
+                if (ch === ' ') {
+                    items.push({ type: 'space' });
+                } else {
+                    const morse = MORSE_MAP[ch.toUpperCase()];
+                    if (morse) items.push({ type: 'char', char: ch.toUpperCase(), morse, index: idx++ });
+                }
+            }
+        } else {
+            const normalized = text.replace(/\s+/g, ' ').trim();
+            const words = normalized.split(/\s*\/\s*/);
+            words.forEach((word, wi) => {
+                if (wi > 0) items.push({ type: 'space' });
+                word.trim().split(' ').filter(Boolean).forEach(code => {
+                    const ch = REVERSE_MORSE[code];
+                    if (ch) items.push({ type: 'char', char: ch, morse: code, index: idx++ });
+                });
+            });
+        }
+        return items;
+    }
+
+    function renderSpans(container, items, mode) {
+        container.innerHTML = '';
+        if (mode === 'text') {
+            items.forEach(item => {
+                if (item.type === 'space') {
+                    container.appendChild(document.createTextNode(' '));
+                } else {
+                    const span = document.createElement('span');
+                    span.dataset.idx = item.index;
+                    span.textContent = item.char;
+                    container.appendChild(span);
+                }
+            });
+        } else {
+            let needSep = false;
+            items.forEach(item => {
+                if (item.type === 'space') {
+                    container.appendChild(document.createTextNode(' / '));
+                    needSep = false;
+                } else {
+                    if (needSep) container.appendChild(document.createTextNode(' '));
+                    const span = document.createElement('span');
+                    span.dataset.idx = item.index;
+                    span.textContent = item.morse;
+                    container.appendChild(span);
+                    needSep = true;
+                }
+            });
+        }
+    }
+
+    function highlightIndex(idx) {
+        document.querySelectorAll(`#inputOverlay [data-idx="${idx}"], #output [data-idx="${idx}"]`).forEach(
+            el => el.classList.add('active-char')
+        );
+    }
+
+    function unhighlightIndex(idx) {
+        document.querySelectorAll(`#inputOverlay [data-idx="${idx}"], #output [data-idx="${idx}"]`).forEach(
+            el => el.classList.remove('active-char')
+        );
+    }
+
+    function clearAllHighlights() {
+        document.querySelectorAll('.active-char').forEach(el => el.classList.remove('active-char'));
+    }
+
+    function startPlayback() {
+        const raw = inputEl.value.trim();
+        if (!raw || isPlaying) return;
+
+        const items = buildPlaybackItems(raw, currentDirection);
+        if (!items.some(i => i.type === 'char')) return;
+
+        isPlaying = true;
+        const ctx = getAudioCtx();
+        masterGain = ctx.createGain();
+        masterGain.connect(ctx.destination);
+
+        // Render spans
+        const inputMode = currentDirection === 'text' ? 'text' : 'morse';
+        const outputMode = currentDirection === 'text' ? 'morse' : 'text';
+        renderSpans(inputOverlay, items, inputMode);
+        renderSpans(outputEl, items, outputMode);
+
+        // Show overlay, disable UI
+        inputOverlay.style.display = 'block';
+        inputEl.style.visibility = 'hidden';
+        inputEl.disabled = true;
+        document.querySelectorAll('.disabled-target').forEach(b => b.classList.add('disabled-during-play'));
+        playBtn.textContent = '■ Stop';
+        playBtn.classList.add('playing');
+
+        // Schedule audio
+        const wpm = parseInt(wpmSlider.value, 10);
+        const dotDur = 1.2 / wpm;
+        const charGap = dotDur * 3;
+        const wordGap = dotDur * 7;
+        let t = ctx.currentTime + 0.05;
+        const baseTime = ctx.currentTime;
+
+        for (const item of items) {
+            if (item.type === 'space') {
+                t += wordGap;
+                continue;
+            }
+            const startT = t;
+            const delay = (startT - baseTime) * 1000;
+            const idx = item.index;
+
+            playbackTimeouts.push(setTimeout(() => highlightIndex(idx), delay));
+            t = scheduleCharAudio(ctx, masterGain, item.morse, t, dotDur);
+
+            const endDelay = (t - baseTime) * 1000;
+            playbackTimeouts.push(setTimeout(() => unhighlightIndex(idx), endDelay));
+            t += charGap;
+        }
+
+        // End of playback
+        const totalDelay = (t - baseTime) * 1000;
+        playbackTimeouts.push(setTimeout(() => stopPlayback(), totalDelay));
+    }
+
+    function stopPlayback() {
+        if (!isPlaying) return;
+        isPlaying = false;
+
+        // Kill audio
+        if (masterGain) {
+            try {
+                masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                masterGain.disconnect();
+            } catch (e) { /* ignore */ }
+            masterGain = null;
+        }
+
+        // Clear timeouts
+        playbackTimeouts.forEach(id => clearTimeout(id));
+        playbackTimeouts = [];
+
+        // Reset UI
+        clearAllHighlights();
+        inputOverlay.style.display = 'none';
+        inputEl.style.visibility = 'visible';
+        inputEl.disabled = false;
+        document.querySelectorAll('.disabled-target').forEach(b => b.classList.remove('disabled-during-play'));
+        playBtn.textContent = '▶ Play';
+        playBtn.classList.remove('playing');
+
+        // Restore output as plain text
+        translate();
+    }
+
+    function togglePlayback() {
+        if (isPlaying) stopPlayback();
+        else startPlayback();
+    }
+
+    // ========================================
+    // 6. UI Event Handlers
+    // ========================================
+    inputEl.addEventListener('input', translate);
+
+    translateBtn.addEventListener('click', () => translate());
+
+    swapBtn.addEventListener('click', () => {
+        const temp = inputEl.value;
+        inputEl.value = outputEl.textContent;
+        outputEl.textContent = temp;
+        currentDirection = detectDirection(inputEl.value);
+        modeLabel.textContent = currentDirection === 'text' ? 'Text → Morse' : 'Morse → Text';
+    });
+
+    clearBtn.addEventListener('click', () => {
+        inputEl.value = '';
+        outputEl.textContent = '';
+        currentDirection = 'text';
+        modeLabel.textContent = 'Text → Morse';
+        inputEl.focus();
+    });
+
+    playBtn.addEventListener('click', togglePlayback);
+
+    copyBtn.addEventListener('click', () => {
+        const text = outputEl.textContent;
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+            const orig = copyBtn.textContent;
+            copyBtn.textContent = '✓ Copied';
+            setTimeout(() => copyBtn.textContent = orig, 1500);
+        });
+    });
+
+    wpmSlider.addEventListener('input', () => {
+        wpmValue.textContent = wpmSlider.value;
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            togglePlayback();
+        }
+        if (e.key === 'Escape' && isPlaying) {
+            e.preventDefault();
+            stopPlayback();
+        }
+    });
+
+    // Reference grid cell click
+    function onCellClick(char, morse, cell) {
+        if (isPlaying) return;
+        const wpm = parseInt(wpmSlider.value, 10);
+        playCharAudio(morse, wpm);
+        cell.classList.add('flash');
+        setTimeout(() => cell.classList.remove('flash'), 400);
+    }
+
+    // ========================================
+    // 7. Initialization
+    // ========================================
+    function buildGrid(container, chars) {
+        chars.forEach(ch => {
+            const morse = MORSE_MAP[ch];
+            if (!morse) return;
+            const cell = document.createElement('div');
+            cell.className = 'ref-cell';
+            cell.innerHTML = `<span class="ref-cell-char">${ch}</span><span class="ref-cell-morse">${morse}</span>`;
+            cell.addEventListener('click', () => onCellClick(ch, morse, cell));
+            container.appendChild(cell);
+        });
+    }
+
+    buildGrid(document.getElementById('lettersGrid'), LETTERS);
+    buildGrid(document.getElementById('numbersGrid'), NUMBERS);
+    buildGrid(document.getElementById('punctGrid'), PUNCTUATION);
+
+    // Detect Mac for shortcut hint
+    if (navigator.platform?.includes('Mac') || navigator.userAgent?.includes('Mac')) {
+        shortcutHint.textContent = '⌘+Enter to play · Escape to stop';
+    }
+</script>
+<script src="../logo.js"></script>
 </body>
 </html>
