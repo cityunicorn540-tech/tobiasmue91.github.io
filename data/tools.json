@@ -3129,5 +3129,23 @@
       "productivity",
       "social"
     ]
+  },
+  {
+    "id": "prompt_injection_sanitizer",
+    "title": "Prompt Injection Sanitizer",
+    "description": "Detect and neutralize hidden prompt injections before sending untrusted text to an LLM. Scan for system instruction overrides, role hijacking, suspicious delimiters, instruction smuggling, adversarial encoding, data exfiltration, and social engineering attacks.",
+    "url": "tools\\prompt_injection_sanitizer.html",
+    "screenshot": "screenshots/screenshot_260.webp",
+    "type": "tool",
+    "aiPowered": false,
+    "featured": false,
+    "date": "2026-04-11",
+    "categories": [
+      "other"
+    ],
+    "tags": [
+      "data",
+      "developer"
+    ]
   }
 ]
