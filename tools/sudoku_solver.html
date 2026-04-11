@@ -2,703 +2,896 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Sudoku Solver - Solve Any Sudoku Puzzle Instantly | Free Online Tool</title>
-    <meta name="description"
-          content="Solve any Sudoku puzzle instantly with our advanced AI-powered solver. Features step-by-step solving, real-time validation, and multiple difficulty levels. Free online Sudoku solver tool.">
-    <meta name="keywords"
-          content="sudoku solver, sudoku puzzle, sudoku game, puzzle solver, online sudoku, sudoku assistant, sudoku help, free sudoku solver, sudoku algorithm, puzzle game">
+    <meta name="description" content="Solve any Sudoku puzzle instantly with our advanced solver. Features pencil marks, hints with explanations, undo/redo, and string import/export. Free online Sudoku solver tool.">
+    <meta name="keywords" content="sudoku solver,sudoku puzzle,puzzle solver,online sudoku,sudoku assistant,sudoku help,free sudoku solver,sudoku hints,pencil marks,sudoku tool">
     <meta name="author" content="Claude Sonnet 4 prompted by Tobias Müller">
-    <meta name="robots" content="index, follow">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://www.gptgames.dev/tools/sudoku_solver.html">
     <meta property="og:title" content="Sudoku Solver - Solve Any Sudoku Puzzle Instantly">
-    <meta property="og:description"
-          content="Advanced AI-powered Sudoku solver with step-by-step solving, real-time validation, and multiple difficulty levels. Solve any Sudoku puzzle instantly for free.">
+    <meta property="og:description" content="Advanced Sudoku solver with pencil marks, intelligent hints, undo/redo, and string import/export. Solve any Sudoku puzzle instantly for free.">
     <meta property="og:image" content="https://www.gptgames.dev/screenshots/screenshot_207.webp">
     <meta property="og:url" content="https://www.gptgames.dev/tools/sudoku_solver.html">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="GPT Games">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Sudoku Solver - Solve Any Sudoku Puzzle Instantly">
-    <meta name="twitter:description"
-          content="Advanced AI-powered Sudoku solver with step-by-step solving, real-time validation, and multiple difficulty levels. Free online tool.">
+    <meta name="twitter:description" content="Advanced Sudoku solver with pencil marks, intelligent hints, and undo/redo. Free online tool.">
     <meta name="twitter:image" content="https://www.gptgames.dev/screenshots/screenshot_207.webp">
-    <meta name="theme-color" content="#3b82f6">
+    <meta name="theme-color" content="#4a6fa5">
     <meta name="application-name" content="Sudoku Solver">
     <meta name="apple-mobile-web-app-title" content="Sudoku Solver">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --grid-line: #2d2d2d;
+            --given: #1a1a1a;
+            --user: #4a6fa5;
+            --solved: #2a9d8f;
+            --error-bg: #fdeaea;
+            --error-text: #c0392b;
+            --focus: #4a6fa5;
+            --highlight: #f5f0eb;
+            --same-digit: #e8f0fe;
+            --btn-primary: #4a6fa5;
+            --btn-primary-text: #fff;
+            --btn-secondary: #e5e5e5;
+            --btn-secondary-text: #333;
+            --btn-active: #4a6fa5;
+            --subtle: #888;
+            --border: #d0d0d0;
+        }
+
+        html {
+            font-family: 'Inter', system-ui, sans-serif;
+            color: var(--text);
+            background: var(--bg)
+        }
+
+        body {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 16px
+        }
+
+        h1 {
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 12px
+        }
+
         .sudoku-grid {
             display: grid;
             grid-template-columns:repeat(9, 1fr);
-            gap: 1px;
-            background: #1f2937;
-            border: 4px solid #1f2937;
-            max-width: 450px;
-            margin: 0 auto;
-            border-radius: 12px;
+            border: 3px solid var(--grid-line);
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1)
+            width: calc(min(100vw - 32px, 468px));
+            margin: 0 auto;
         }
 
-        .sudoku-cell {
-            width: 48px;
-            height: 48px;
+        /* Borders on wrappers */
+        .cell-wrap {
+            position: relative;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            background: var(--bg);
+        }
+
+        .cell-wrap:nth-child(9n) {
+            border-right: none
+        }
+
+        .cell-wrap:nth-child(n+73) {
+            border-bottom: none
+        }
+
+        .cell-wrap:nth-child(3n):not(:nth-child(9n)) {
+            border-right: 3px solid var(--grid-line)
+        }
+
+        .cell-wrap:nth-child(n+19):nth-child(-n+27),
+        .cell-wrap:nth-child(n+46):nth-child(-n+54) {
+            border-bottom: 3px solid var(--grid-line)
+        }
+
+        /* Highlight states on wrapper background */
+        .cell-wrap.highlight {
+            background: var(--highlight)
+        }
+
+        .cell-wrap.same-digit {
+            background: var(--same-digit)
+        }
+
+        .cell-wrap.focused {
+            box-shadow: inset 0 0 0 2px var(--focus);
+            z-index: 1
+        }
+
+        .cell-wrap.error {
+            background: var(--error-bg)
+        }
+
+        .cell-wrap input {
+            display: block;
+            width: 100%;
+            aspect-ratio: 1;
             border: none;
             text-align: center;
-            font-size: 18px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(16px, 4vw, 22px);
             font-weight: 600;
-            background: white;
-            transition: all 0.3s ease;
-            cursor: pointer
-        }
-
-        .sudoku-cell:focus {
-            outline: 3px solid #3b82f6;
-            outline-offset: -3px;
-            background: #eff6ff;
-            transform: scale(1.05);
-            z-index: 10;
-            position: relative
-        }
-
-        .sudoku-cell:hover:not(.given) {
-            background: #f8fafc;
-            transform: scale(1.02)
-        }
-
-        .sudoku-cell.error {
-            background: #fee2e2;
-            color: #dc2626;
-            animation: shake 0.5s ease-in-out
-        }
-
-        .sudoku-cell.solved {
-            background: #dcfce7;
-            color: #16a34a;
-            animation: fadeIn 0.4s ease-in-out
-        }
-
-        .sudoku-cell.given {
-            background: #f1f5f9;
-            color: #0f172a;
-            font-weight: 800;
-            cursor: not-allowed
-        }
-
-        .sudoku-cell.highlighted {
-            background: #fef3c7;
-            color: #d97706
-        }
-
-        .sudoku-cell.solving {
-            background: #ddd6fe;
-            color: #7c3aed;
-            animation: pulse 0.8s infinite
-        }
-
-        .box-border {
-            border-right: 4px solid #1f2937 !important
-        }
-
-        .box-border-bottom {
-            border-bottom: 4px solid #1f2937 !important
-        }
-
-        .btn {
-            transition: all 0.3s ease;
+            background: transparent;
+            color: var(--user);
+            outline: none;
+            caret-color: transparent;
+            padding: 0;
             position: relative;
-            overflow: hidden
+            z-index: 2;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15)
+        .cell-wrap input.given {
+            color: var(--given);
+            font-weight: 700
         }
 
-        .btn:active {
-            transform: translateY(0)
+        .cell-wrap input.solved-digit {
+            color: var(--solved)
         }
 
-        .btn.loading {
-            pointer-events: none
+        .cell-wrap.error input {
+            color: var(--error-text)
         }
 
-        .btn.loading::after {
-            content: '';
+        /* Hide input text when pencil marks are visible so marks show through */
+        .cell-wrap.has-pencil input {
+            color: transparent
+        }
+
+        /* Pencil marks */
+        .pencil-marks {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 20px;
-            height: 20px;
-            margin: -10px 0 0 -10px;
-            border: 2px solid transparent;
-            border-top: 2px solid currentColor;
-            border-radius: 50%;
-            animation: spin 1s linear infinite
-        }
-
-        .progress-bar {
-            height: 4px;
-            background: #e5e7eb;
-            border-radius: 2px;
-            overflow: hidden;
-            margin: 10px 0
-        }
-
-        .progress-fill {
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #06b6d4);
-            border-radius: 2px;
-            transition: width 0.3s ease;
-            animation: shimmer 2s infinite
+            display: grid;
+            grid-template-columns:repeat(3, 1fr);
+            grid-template-rows:repeat(3, 1fr);
+            pointer-events: none;
+            padding: 1px;
+            z-index: 1;
         }
 
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: white;
-            border-radius: 8px;
-            padding: 16px 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            z-index: 1000
+        .pencil-marks span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(8px, 2vw, 11px);
+            color: var(--subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            font-weight: 500;
         }
 
-        .toast.show {
-            transform: translateX(0)
+        .status {
+            text-align: center;
+            min-height: 24px;
+            font-size: 14px;
+            margin: 10px 0;
+            color: var(--subtle);
+            font-weight: 500
         }
 
-        .toast.success {
-            border-left: 4px solid #10b981
+        .status.err {
+            color: var(--error-text)
         }
 
-        .toast.error {
-            border-left: 4px solid #ef4444
+        .status.ok {
+            color: var(--solved)
         }
 
-        .toast.info {
-            border-left: 4px solid #3b82f6
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 12px
         }
 
-        @keyframes shake {
-            0%, 100% {
-                transform: translateX(0)
-            }
-            25% {
-                transform: translateX(-4px)
-            }
-            75% {
-                transform: translateX(4px)
-            }
+        button {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 7px 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            background: var(--btn-secondary);
+            color: var(--btn-secondary-text);
+            transition: opacity .15s;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.8)
-            }
-            to {
-                opacity: 1;
-                transform: scale(1)
-            }
+        button:hover {
+            opacity: .85
         }
 
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1
-            }
-            50% {
-                opacity: 0.6
-            }
+        button:active {
+            opacity: .7
         }
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg)
-            }
+        button.primary {
+            background: var(--btn-primary);
+            color: var(--btn-primary-text)
         }
 
-        @keyframes shimmer {
-            0% {
-                background-position: -200px 0
-            }
-            100% {
-                background-position: 200px 0
-            }
+        button.active {
+            background: var(--btn-active);
+            color: #fff
         }
 
-        @media (max-width: 640px) {
-            .sudoku-cell {
-                width: 35px;
-                height: 35px;
-                font-size: 16px
-            }
+        button:disabled {
+            opacity: .4;
+            cursor: default
+        }
 
-            .sudoku-grid {
-                max-width: 325px
-            }
+        .string-section {
+            margin-top: 8px
+        }
 
-            .btn {
-                padding: 8px 16px;
-                font-size: 14px
-            }
+        .string-toggle {
+            font-size: 12px;
+            color: var(--subtle);
+            cursor: pointer;
+            text-align: center;
+            user-select: none
+        }
+
+        .string-toggle:hover {
+            color: var(--text)
+        }
+
+        .string-body {
+            display: none;
+            margin-top: 8px
+        }
+
+        .string-body.open {
+            display: flex;
+            gap: 6px;
+            align-items: center
+        }
+
+        .string-body input {
+            flex: 1;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            padding: 6px 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .string-body input:focus {
+            border-color: var(--focus)
+        }
+
+        .diff-label {
+            text-align: center;
+            font-size: 12px;
+            color: var(--subtle);
+            margin-bottom: 6px;
+            min-height: 18px
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen py-8">
-<div class="max-w-4xl mx-auto px-4">
-    <div class="text-center mb-8">
-        <h1 class="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-            Sudoku Solver</h1>
-        <p class="text-gray-600 text-lg">Solve any Sudoku puzzle instantly with our advanced algorithm</p>
-    </div>
-
-    <div class="bg-white rounded-2xl shadow-xl p-8 mb-6 backdrop-blur-sm bg-opacity-95">
-        <div class="sudoku-grid mb-8" id="sudoku-grid"></div>
-        <div id="progress-container" class="hidden">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-            </div>
-            <p class="text-center text-sm text-gray-600" id="progress-text">Solving...</p>
-        </div>
-
-        <div class="flex flex-wrap gap-4 justify-center mb-6">
-            <button id="solve-btn"
-                    class="btn bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg">
-                <i class="fas fa-magic mr-2"></i>Solve Instantly
-            </button>
-            <button id="step-btn"
-                    class="btn bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg">
-                <i class="fas fa-play mr-2"></i>Step by Step
-            </button>
-            <button id="validate-btn"
-                    class="btn bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg">
-                <i class="fas fa-check-circle mr-2"></i>Validate
-            </button>
-            <button id="clear-btn"
-                    class="btn bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg">
-                <i class="fas fa-trash mr-2"></i>Clear
-            </button>
-        </div>
-
-        <div class="text-center mb-4">
-            <span class="text-gray-700 font-semibold mr-4">Sample Puzzles:</span>
-            <div class="inline-flex gap-2 mt-2">
-                <button class="sample-btn bg-gradient-to-r from-purple-100 to-purple-200 hover:from-purple-200 hover:to-purple-300 text-purple-700 px-4 py-2 rounded-lg font-medium transition shadow-md"
-                        data-puzzle="0">
-                    <i class="fas fa-star mr-1"></i>Easy
-                </button>
-                <button class="sample-btn bg-gradient-to-r from-yellow-100 to-yellow-200 hover:from-yellow-200 hover:to-yellow-300 text-yellow-700 px-4 py-2 rounded-lg font-medium transition shadow-md"
-                        data-puzzle="1">
-                    <i class="fas fa-star mr-1"></i><i class="fas fa-star mr-1"></i>Medium
-                </button>
-                <button class="sample-btn bg-gradient-to-r from-red-100 to-red-200 hover:from-red-200 hover:to-red-300 text-red-700 px-4 py-2 rounded-lg font-medium transition shadow-md"
-                        data-puzzle="2">
-                    <i class="fas fa-star mr-1"></i><i class="fas fa-star mr-1"></i><i class="fas fa-star mr-1"></i>Hard
-                </button>
-            </div>
-        </div>
-
-        <div class="text-center text-sm text-gray-500">
-            <p><i class="fas fa-keyboard mr-1"></i>Use arrow keys to navigate • <i class="fas fa-backspace mr-1"></i>Backspace
-                to clear • <i class="fas fa-mouse-pointer mr-1"></i>Click to focus</p>
-        </div>
-    </div>
-
-    <div id="status" class="text-center text-xl font-bold min-h-[2rem]"></div>
+<body>
+<h1>Sudoku Solver</h1>
+<div class="diff-label" id="diff-label"></div>
+<div class="sudoku-grid" id="grid"></div>
+<div class="status" id="status"></div>
+<div class="btn-row">
+    <button class="primary" id="btn-solve">Solve</button>
+    <button class="primary" id="btn-hint">Hint</button>
+    <button id="btn-pencil">Pencil</button>
+    <button id="btn-undo" disabled>↶ Undo</button>
+    <button id="btn-redo" disabled>↷ Redo</button>
+    <button id="btn-clear">Clear</button>
 </div>
-
-<div id="toast-container"></div>
-
+<div class="btn-row">
+    <span style="font-size:12px;color:var(--subtle);margin-right:4px">Sample:</span>
+    <button class="sample" data-s="1">Medium</button>
+    <button class="sample" data-s="2">Hard</button>
+</div>
+<div class="string-section">
+    <div class="string-toggle" id="str-toggle">▸ Import / Export string</div>
+    <div class="string-body" id="str-body">
+        <input type="text" id="str-input" placeholder="Paste 81 digits (0 or . = empty)" spellcheck="false"
+               autocomplete="off">
+        <button id="str-import">Import</button>
+        <button id="str-copy">Copy</button>
+    </div>
+    <div id="str-err" style="text-align:center;color:var(--error-text);font-size:11px"></div>
+</div>
 <script>
-    class SudokuSolverPro {
+    class SudokuSolver {
         constructor() {
-            this.grid = Array(9).fill().map(() => Array(9).fill(0));
-            this.originalGrid = Array(9).fill().map(() => Array(9).fill(0));
-            this.samplePuzzles = [
-                [[5, 3, 0, 0, 7, 0, 0, 0, 0], [6, 0, 0, 1, 9, 5, 0, 0, 0], [0, 9, 8, 0, 0, 0, 0, 6, 0], [8, 0, 0, 0, 6, 0, 0, 0, 3], [4, 0, 0, 8, 0, 3, 0, 0, 1], [7, 0, 0, 0, 2, 0, 0, 0, 6], [0, 6, 0, 0, 0, 0, 2, 8, 0], [0, 0, 0, 4, 1, 9, 0, 0, 5], [0, 0, 0, 0, 8, 0, 0, 7, 9]],
-                [[0, 0, 0, 6, 0, 0, 4, 0, 0], [7, 0, 0, 0, 0, 3, 6, 0, 0], [0, 0, 0, 0, 9, 1, 0, 8, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 5, 0, 1, 8, 0, 0, 0, 3], [0, 0, 0, 3, 0, 6, 0, 4, 5], [0, 4, 0, 2, 0, 0, 0, 6, 0], [9, 0, 3, 0, 0, 0, 0, 0, 0], [0, 2, 0, 0, 0, 0, 1, 0, 0]],
-                [[8, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 3, 6, 0, 0, 0, 0, 0], [0, 7, 0, 0, 9, 0, 2, 0, 0], [0, 5, 0, 0, 0, 7, 0, 0, 0], [0, 0, 0, 0, 4, 5, 7, 0, 0], [0, 0, 0, 1, 0, 0, 0, 3, 0], [0, 0, 1, 0, 0, 0, 0, 6, 8], [0, 0, 8, 5, 0, 0, 0, 1, 0], [0, 9, 0, 0, 0, 0, 4, 0, 0]]
+            this.grid = Array.from({length: 9}, () => Array(9).fill(0));
+            this.candidates = Array.from({length: 9}, () => Array.from({length: 9}, () => new Set()));
+            this.given = new Set();
+            this.pencilMode = false;
+            this.undoStack = [];
+            this.redoStack = [];
+            this.focusedIndex = -1;
+            this.samples = [
+                null,
+                "000600400700003600000091080000000000050180003000306045040200060903000000020000100",
+                "800000000003600000070090200050007000000045700000100030001000068008500010090000400"
             ];
-            this.solving = false;
-            this.solveSteps = 0;
-            this.maxSteps = 0;
-            this.init()
-        }
-
-        init() {
-            this.createGrid();
+            this.buildGrid();
             this.bindEvents();
-            this.loadSample(0);
-            this.showToast('Welcome to Sudoku Solver!', 'info')
+            this.loadSample(1);
         }
 
-        createGrid() {
-            const container = document.getElementById('sudoku-grid');
-            container.innerHTML = '';
+        getCell(i) {
+            return document.querySelector(`.cell-wrap[data-i="${i}"]`);
+        }
+
+        getInput(i) {
+            return this.getCell(i)?.querySelector('input');
+        }
+
+        buildGrid() {
+            const g = document.getElementById('grid');
+            g.innerHTML = '';
             for (let i = 0; i < 81; i++) {
-                const cell = document.createElement('input');
-                cell.type = 'text';
-                cell.className = 'sudoku-cell';
-                cell.maxLength = 1;
-                cell.dataset.index = i;
-                cell.setAttribute('aria-label', `Cell ${Math.floor(i / 9) + 1}, ${(i % 9) + 1}`);
-                if ((i + 1) % 3 === 0 && (i + 1) % 9 !== 0) cell.classList.add('box-border');
-                if (Math.floor(i / 9) === 2 || Math.floor(i / 9) === 5) cell.classList.add('box-border-bottom');
-                cell.addEventListener('input', e => this.handleInput(e));
-                cell.addEventListener('keydown', e => this.handleKeydown(e));
-                cell.addEventListener('focus', e => this.highlightRelated(e));
-                cell.addEventListener('blur', e => this.clearHighlight(e));
-                container.appendChild(cell)
+                const wrap = document.createElement('div');
+                wrap.className = 'cell-wrap';
+                wrap.dataset.i = i;
+
+                const inp = document.createElement('input');
+                inp.type = 'text';
+                inp.maxLength = 1;
+                inp.setAttribute('inputmode', 'numeric');
+                inp.setAttribute('autocomplete', 'off');
+                inp.setAttribute('aria-label', `Cell ${(i / 9 | 0) + 1},${(i % 9) + 1}`);
+                wrap.appendChild(inp);
+
+                const pm = document.createElement('div');
+                pm.className = 'pencil-marks';
+                pm.style.display = 'none';
+                for (let d = 1; d <= 9; d++) {
+                    const sp = document.createElement('span');
+                    pm.appendChild(sp);
+                }
+                wrap.appendChild(pm);
+
+                g.appendChild(wrap);
             }
         }
 
         bindEvents() {
-            document.getElementById('solve-btn').addEventListener('click', () => this.solve());
-            document.getElementById('step-btn').addEventListener('click', () => this.solveStepByStep());
-            document.getElementById('validate-btn').addEventListener('click', () => this.validatePuzzle());
-            document.getElementById('clear-btn').addEventListener('click', () => this.clear());
-            document.querySelectorAll('.sample-btn').forEach(btn => {
-                btn.addEventListener('click', e => this.loadSample(parseInt(e.target.dataset.puzzle)))
+            const g = document.getElementById('grid');
+            g.addEventListener('input', e => this.onInput(e));
+            g.addEventListener('keydown', e => this.onKeydown(e));
+            g.addEventListener('focusin', e => {
+                const wrap = e.target.closest('.cell-wrap');
+                if (wrap) {
+                    this.focusedIndex = +wrap.dataset.i;
+                    this.renderHighlights();
+                }
             });
-            document.addEventListener('keydown', e => {
-                if (e.ctrlKey || e.metaKey) {
-                    if (e.key === 'z') this.clear();
-                    if (e.key === 'Enter') this.solve();
-                    e.preventDefault()
+            g.addEventListener('focusout', () => {
+                this.focusedIndex = -1;
+                this.renderHighlights();
+            });
+
+            document.getElementById('btn-solve').onclick = () => this.solve();
+            document.getElementById('btn-hint').onclick = () => this.hint();
+            document.getElementById('btn-pencil').onclick = () => this.togglePencil();
+            document.getElementById('btn-undo').onclick = () => this.undo();
+            document.getElementById('btn-redo').onclick = () => this.redo();
+            document.getElementById('btn-clear').onclick = () => this.clear();
+            document.querySelectorAll('.sample').forEach(b =>
+                b.onclick = () => this.loadSample(+b.dataset.s)
+            );
+
+            document.getElementById('str-toggle').onclick = () => {
+                const b = document.getElementById('str-body');
+                const t = document.getElementById('str-toggle');
+                b.classList.toggle('open');
+                t.textContent = b.classList.contains('open') ? '▾ Import / Export string' : '▸ Import / Export string';
+            };
+            document.getElementById('str-import').onclick = () => this.importString();
+            document.getElementById('str-copy').onclick = () => this.exportString();
+
+            document.addEventListener('paste', e => {
+                if (document.activeElement.id === 'str-input') return;
+                const t = (e.clipboardData || window.clipboardData).getData('text').replace(/[\s\n\r]/g, '');
+                if (/^[0-9.]{81}$/.test(t)) {
+                    e.preventDefault();
+                    this.loadFromString(t);
+                    this.setStatus('Puzzle imported from clipboard', 'ok');
                 }
-            })
+            });
         }
 
-        handleInput(e) {
-            const value = e.target.value;
-            if (!/^[1-9]$/.test(value)) {
-                e.target.value = '';
-                return
+// --- State management ---
+        snapshot() {
+            return {
+                grid: this.grid.map(r => [...r]),
+                candidates: this.candidates.map(r => r.map(s => new Set(s)))
+            };
+        }
+
+        pushUndo() {
+            this.undoStack.push(this.snapshot());
+            if (this.undoStack.length > 200) this.undoStack.shift();
+            this.redoStack = [];
+            this.updateUndoButtons();
+        }
+
+        undo() {
+            if (!this.undoStack.length) return;
+            this.redoStack.push(this.snapshot());
+            const s = this.undoStack.pop();
+            this.grid = s.grid;
+            this.candidates = s.candidates;
+            this.renderAll();
+            this.updateUndoButtons();
+        }
+
+        redo() {
+            if (!this.redoStack.length) return;
+            this.undoStack.push(this.snapshot());
+            const s = this.redoStack.pop();
+            this.grid = s.grid;
+            this.candidates = s.candidates;
+            this.renderAll();
+            this.updateUndoButtons();
+        }
+
+        updateUndoButtons() {
+            document.getElementById('btn-undo').disabled = !this.undoStack.length;
+            document.getElementById('btn-redo').disabled = !this.redoStack.length;
+        }
+
+// --- Input handling ---
+        onInput(e) {
+            const inp = e.target;
+            const wrap = inp.closest('.cell-wrap');
+            if (!wrap) return;
+            const idx = +wrap.dataset.i, r = idx / 9 | 0, c = idx % 9;
+            if (this.given.has(idx)) {
+                inp.value = '';
+                return;
             }
-            const index = parseInt(e.target.dataset.index);
-            const row = Math.floor(index / 9);
-            const col = index % 9;
-            this.grid[row][col] = parseInt(value);
-            this.validateCell(row, col);
-            this.moveToNext(index)
+            const v = inp.value;
+            if (!/^[1-9]$/.test(v)) {
+                inp.value = '';
+                return;
+            }
+            const num = +v;
+
+            if (this.pencilMode) {
+                inp.value = this.grid[r][c] || '';
+                this.pushUndo();
+                const s = this.candidates[r][c];
+                s.has(num) ? s.delete(num) : s.add(num);
+                this.renderCell(idx);
+                return;
+            }
+
+            this.pushUndo();
+            this.grid[r][c] = num;
+            this.candidates[r][c].clear();
+            this.removeCandidateFromPeers(r, c, num);
+            this.renderAll();
+            this.advanceToNextEmpty(idx);
         }
 
-        handleKeydown(e) {
-            const index = parseInt(e.target.dataset.index);
-            const row = Math.floor(index / 9);
-            const col = index % 9;
+        removeCandidateFromPeers(r, c, num) {
+            for (let i = 0; i < 9; i++) {
+                this.candidates[r][i].delete(num);
+                this.candidates[i][c].delete(num);
+            }
+            const br = (r / 3 | 0) * 3, bc = (c / 3 | 0) * 3;
+            for (let i = br; i < br + 3; i++)
+                for (let j = bc; j < bc + 3; j++)
+                    this.candidates[i][j].delete(num);
+        }
+
+        onKeydown(e) {
+            const wrap = e.target.closest('.cell-wrap');
+            if (!wrap) return;
+            const idx = +wrap.dataset.i, r = idx / 9 | 0, c = idx % 9;
+            const inp = e.target;
+
+            if (e.key === 'p' || e.key === 'P') {
+                if (!e.ctrlKey && !e.metaKey) {
+                    e.preventDefault();
+                    this.togglePencil();
+                }
+                return;
+            }
+            if (e.key === 'Escape') {
+                inp.blur();
+                return;
+            }
+
             if (e.key === 'Backspace' || e.key === 'Delete') {
-                if (!e.target.classList.contains('given')) {
-                    this.grid[row][col] = 0;
-                    e.target.value = '';
-                    e.target.classList.remove('error', 'solved')
+                if (!this.given.has(idx) && (this.grid[r][c] || this.candidates[r][c].size)) {
+                    e.preventDefault();
+                    this.pushUndo();
+                    this.grid[r][c] = 0;
+                    this.candidates[r][c].clear();
+                    this.renderAll();
                 }
+                return;
             }
-            const moves = {ArrowUp: -9, ArrowDown: 9, ArrowLeft: -1, ArrowRight: 1};
-            if (moves[e.key]) {
+
+            if (e.key === 'Tab') {
                 e.preventDefault();
-                const newIndex = index + moves[e.key];
-                if (newIndex >= 0 && newIndex < 81 && (e.key !== 'ArrowLeft' || index % 9 !== 0) && (e.key !== 'ArrowRight' || index % 9 !== 8)) {
-                    this.focusCell(newIndex)
+                const dir = e.shiftKey ? -1 : 1;
+                let ni = idx + dir;
+                while (ni >= 0 && ni < 81 && (this.grid[ni / 9 | 0][ni % 9] !== 0 || this.given.has(ni))) ni += dir;
+                if (ni >= 0 && ni < 81) this.focusCell(ni);
+                return;
+            }
+
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                e.preventDefault();
+                e.shiftKey ? this.redo() : this.undo();
+                return;
+            }
+
+            const moves = {ArrowUp: -9, ArrowDown: 9, ArrowLeft: -1, ArrowRight: 1};
+            if (moves[e.key] != null) {
+                e.preventDefault();
+                let ni = idx + moves[e.key];
+                if (e.key === 'ArrowLeft' && c === 0) ni = idx + 8;
+                else if (e.key === 'ArrowRight' && c === 8) ni = idx - 8;
+                else if (ni < 0) ni += 81;
+                else if (ni >= 81) ni -= 81;
+                this.focusCell(ni);
+                return;
+            }
+
+// Typing digit into filled non-given cell: clear input so the input event picks up the new value
+            if (/^[1-9]$/.test(e.key) && !this.given.has(idx) && !this.pencilMode) {
+                inp.value = '';
+            }
+        }
+
+        advanceToNextEmpty(from) {
+            for (let i = from + 1; i < 81; i++) {
+                const r = i / 9 | 0, c = i % 9;
+                if (this.grid[r][c] === 0 && !this.given.has(i)) {
+                    this.focusCell(i);
+                    return;
                 }
             }
         }
 
-        moveToNext(index) {
-            for (let i = index + 1; i < 81; i++) {
-                const cell = document.querySelector(`[data-index="${i}"]`);
-                if (!cell.classList.contains('given')) {
-                    cell.focus();
-                    break
+        focusCell(i) {
+            this.getInput(i)?.focus();
+        }
+
+        togglePencil() {
+            this.pencilMode = !this.pencilMode;
+            document.getElementById('btn-pencil').classList.toggle('active', this.pencilMode);
+        }
+
+// --- Rendering ---
+        renderAll() {
+            for (let i = 0; i < 81; i++) this.renderCell(i);
+            this.renderHighlights();
+            this.detectAllConflicts();
+        }
+
+        renderCell(idx) {
+            const r = idx / 9 | 0, c = idx % 9;
+            const wrap = this.getCell(idx);
+            const inp = wrap.querySelector('input');
+            const pm = wrap.querySelector('.pencil-marks');
+            const v = this.grid[r][c];
+            const cands = this.candidates[r][c];
+
+            inp.value = v || '';
+            inp.classList.remove('given', 'solved-digit');
+            inp.readOnly = this.given.has(idx);
+            if (this.given.has(idx)) {
+                inp.classList.add('given');
+            } else if (v > 0) {
+                inp.classList.add('solved-digit');
+            }
+
+// Pencil marks
+            const hasCands = !v && cands.size > 0;
+            wrap.classList.toggle('has-pencil', hasCands);
+            pm.style.display = hasCands ? '' : 'none';
+            if (hasCands) {
+                const spans = pm.children;
+                for (let d = 1; d <= 9; d++) {
+                    spans[d - 1].textContent = cands.has(d) ? d : '';
                 }
             }
         }
 
-        focusCell(index) {
-            document.querySelector(`[data-index="${index}"]`).focus()
-        }
+        renderHighlights() {
+            const fi = this.focusedIndex;
+            const fr = fi >= 0 ? fi / 9 | 0 : -1, fc = fi >= 0 ? fi % 9 : -1;
+            const fv = fi >= 0 ? this.grid[fr][fc] : 0;
+            const fbr = (fr / 3 | 0) * 3, fbc = (fc / 3 | 0) * 3;
 
-        highlightRelated(e) {
-            const index = parseInt(e.target.dataset.index);
-            const row = Math.floor(index / 9);
-            const col = index % 9;
-            const boxRow = Math.floor(row / 3) * 3;
-            const boxCol = Math.floor(col / 3) * 3;
-            document.querySelectorAll('.sudoku-cell').forEach((cell, i) => {
-                const cellRow = Math.floor(i / 9);
-                const cellCol = i % 9;
-                if (cellRow === row || cellCol === col || (cellRow >= boxRow && cellRow < boxRow + 3 && cellCol >= boxCol && cellCol < boxCol + 3)) {
-                    if (i !== index) cell.classList.add('highlighted')
+            for (let i = 0; i < 81; i++) {
+                const wrap = this.getCell(i);
+                const r = i / 9 | 0, c = i % 9;
+                wrap.classList.remove('highlight', 'same-digit', 'focused');
+                if (fi < 0) continue;
+                if (i === fi) {
+                    wrap.classList.add('focused');
+                    continue;
                 }
-            })
+                if (fv && this.grid[r][c] === fv) {
+                    wrap.classList.add('same-digit');
+                    continue;
+                }
+                if (r === fr || c === fc || (r >= fbr && r < fbr + 3 && c >= fbc && c < fbc + 3)) {
+                    wrap.classList.add('highlight');
+                }
+            }
         }
 
-        clearHighlight() {
-            document.querySelectorAll('.highlighted').forEach(cell => cell.classList.remove('highlighted'))
+        detectAllConflicts() {
+            const errs = new Set();
+// Rows
+            for (let r = 0; r < 9; r++) {
+                const seen = {};
+                for (let c = 0; c < 9; c++) {
+                    const v = this.grid[r][c];
+                    if (!v) continue;
+                    if (seen[v] != null) {
+                        errs.add(r * 9 + c);
+                        errs.add(seen[v]);
+                    } else seen[v] = r * 9 + c;
+                }
+            }
+// Cols
+            for (let c = 0; c < 9; c++) {
+                const seen = {};
+                for (let r = 0; r < 9; r++) {
+                    const v = this.grid[r][c];
+                    if (!v) continue;
+                    if (seen[v] != null) {
+                        errs.add(r * 9 + c);
+                        errs.add(seen[v]);
+                    } else seen[v] = r * 9 + c;
+                }
+            }
+// Boxes
+            for (let br = 0; br < 9; br += 3) for (let bc = 0; bc < 9; bc += 3) {
+                const seen = {};
+                for (let r = br; r < br + 3; r++) for (let c = bc; c < bc + 3; c++) {
+                    const v = this.grid[r][c];
+                    if (!v) continue;
+                    const k = r * 9 + c;
+                    if (seen[v] != null) {
+                        errs.add(k);
+                        errs.add(seen[v]);
+                    } else seen[v] = k;
+                }
+            }
+            for (let i = 0; i < 81; i++) {
+                const wrap = this.getCell(i);
+                const inp = wrap.querySelector('input');
+                wrap.classList.toggle('error', errs.has(i));
+                if (!errs.has(i) && !this.given.has(i) && this.grid[i / 9 | 0][i % 9]) {
+                    inp.classList.add('solved-digit');
+                }
+            }
         }
 
-        validateCell(row, col) {
-            const value = this.grid[row][col];
-            if (value === 0) return true;
-            const cell = document.querySelector(`[data-index="${row * 9 + col}"]`);
-            let isValid = true;
+// --- Solver ---
+        isValid(grid, r, c, num) {
             for (let i = 0; i < 9; i++) {
-                if (i !== col && this.grid[row][i] === value) isValid = false;
-                if (i !== row && this.grid[i][col] === value) isValid = false
+                if (grid[r][i] === num || grid[i][c] === num) return false;
             }
-            const boxRow = Math.floor(row / 3) * 3;
-            const boxCol = Math.floor(col / 3) * 3;
-            for (let i = boxRow; i < boxRow + 3; i++) {
-                for (let j = boxCol; j < boxCol + 3; j++) {
-                    if ((i !== row || j !== col) && this.grid[i][j] === value) isValid = false
-                }
-            }
-            cell.classList.toggle('error', !isValid);
-            return isValid
+            const br = (r / 3 | 0) * 3, bc = (c / 3 | 0) * 3;
+            for (let i = br; i < br + 3; i++) for (let j = bc; j < bc + 3; j++) if (grid[i][j] === num) return false;
+            return true;
         }
 
-        validatePuzzle() {
-            let hasEmpty = false;
-            let hasErrors = false;
-            for (let row = 0; row < 9; row++) {
-                for (let col = 0; col < 9; col++) {
-                    if (this.grid[row][col] === 0) hasEmpty = true;
-                    if (!this.validateCell(row, col)) hasErrors = true
+        solveBacktrack(grid) {
+            for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++) {
+                if (grid[r][c]) continue;
+                for (let n = 1; n <= 9; n++) {
+                    if (this.isValid(grid, r, c, n)) {
+                        grid[r][c] = n;
+                        if (this.solveBacktrack(grid)) return true;
+                        grid[r][c] = 0;
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+
+        solve() {
+// Check existing conflicts
+            for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++) {
+                if (!this.grid[r][c]) continue;
+                const v = this.grid[r][c];
+                this.grid[r][c] = 0;
+                const ok = this.isValid(this.grid, r, c, v);
+                this.grid[r][c] = v;
+                if (!ok) {
+                    this.setStatus('Fix conflicts before solving', 'err');
+                    return;
                 }
             }
-            if (hasErrors) {
-                this.showToast('Puzzle has conflicts! Check red cells.', 'error');
-                this.setStatus('❌ Puzzle contains errors', 'text-red-600')
-            } else if (hasEmpty) {
-                this.showToast('Puzzle is valid but incomplete.', 'info');
-                this.setStatus('✅ Valid puzzle, ready to solve!', 'text-blue-600')
+            this.pushUndo();
+            const copy = this.grid.map(r => [...r]);
+            if (this.solveBacktrack(copy)) {
+                this.grid = copy;
+                this.candidates = Array.from({length: 9}, () => Array.from({length: 9}, () => new Set()));
+                this.renderAll();
+                document.querySelectorAll('.cell-wrap input.solved-digit').forEach((el, i) => {
+                    el.style.opacity = '0';
+                    requestAnimationFrame(() => {
+                        el.style.transition = 'opacity .15s';
+                        el.style.opacity = '1';
+                    });
+                });
+                this.setStatus('Solved', 'ok');
             } else {
-                this.showToast('Congratulations! Puzzle completed!', 'success');
-                this.setStatus('🎉 Puzzle solved correctly!', 'text-green-600')
+                this.undoStack.pop();
+                this.setStatus('No solution exists', 'err');
             }
         }
 
-        isValidMove(grid, row, col, num) {
-            for (let i = 0; i < 9; i++) {
-                if (grid[row][i] === num || grid[i][col] === num) return false
-            }
-            const boxRow = Math.floor(row / 3) * 3;
-            const boxCol = Math.floor(col / 3) * 3;
-            for (let i = boxRow; i < boxRow + 3; i++) {
-                for (let j = boxCol; j < boxCol + 3; j++) {
-                    if (grid[i][j] === num) return false
+// --- Hint ---
+        hint() {
+// Naked singles
+            for (let r = 0; r < 9; r++) for (let c = 0; c < 9; c++) {
+                if (this.grid[r][c]) continue;
+                const poss = [];
+                for (let n = 1; n <= 9; n++) if (this.isValid(this.grid, r, c, n)) poss.push(n);
+                if (poss.length === 1) {
+                    this.pushUndo();
+                    this.grid[r][c] = poss[0];
+                    this.candidates[r][c].clear();
+                    this.removeCandidateFromPeers(r, c, poss[0]);
+                    this.renderAll();
+                    this.focusCell(r * 9 + c);
+                    this.setStatus(`R${r + 1}C${c + 1} = ${poss[0]} — only possibility for this cell`, 'ok');
+                    return;
                 }
             }
-            return true
-        }
-
-        async solveBacktrack(grid, stepByStep = false) {
-            for (let row = 0; row < 9; row++) {
-                for (let col = 0; col < 9; col++) {
-                    if (grid[row][col] === 0) {
-                        for (let num = 1; num <= 9; num++) {
-                            if (this.isValidMove(grid, row, col, num)) {
-                                grid[row][col] = num;
-                                this.solveSteps++;
-                                if (stepByStep) {
-                                    this.updateCell(row, col, num);
-                                    this.updateProgress();
-                                    await this.sleep(120)
-                                }
-                                if (await this.solveBacktrack(grid, stepByStep)) return true;
-                                grid[row][col] = 0;
-                                if (stepByStep) {
-                                    this.updateCell(row, col, 0);
-                                    await this.sleep(60)
-                                }
-                            }
+// Hidden singles
+            for (const units of [this.rows(), this.cols(), this.boxes()]) {
+                for (const cells of units) {
+                    for (let n = 1; n <= 9; n++) {
+                        const spots = cells.filter(([r, c]) => !this.grid[r][c] && this.isValid(this.grid, r, c, n));
+                        if (spots.length === 1) {
+                            const [r, c] = spots[0];
+                            this.pushUndo();
+                            this.grid[r][c] = n;
+                            this.candidates[r][c].clear();
+                            this.removeCandidateFromPeers(r, c, n);
+                            this.renderAll();
+                            this.focusCell(r * 9 + c);
+                            this.setStatus(`R${r + 1}C${c + 1} = ${n} — only place for ${n} in its group`, 'ok');
+                            return;
                         }
-                        return false
                     }
                 }
             }
-            return true
+            this.setStatus('No logical hint found — try Solve', '');
         }
 
-        updateCell(row, col, value) {
-            const cell = document.querySelector(`[data-index="${row * 9 + col}"]`);
-            cell.value = value || '';
-            if (value > 0) {
-                cell.classList.add('solving');
-                setTimeout(() => {
-                    cell.classList.remove('solving');
-                    if (!cell.classList.contains('given')) cell.classList.add('solved')
-                }, 400)
+        rows() {
+            return Array.from({length: 9}, (_, r) => Array.from({length: 9}, (_, c) => [r, c]));
+        }
+
+        cols() {
+            return Array.from({length: 9}, (_, c) => Array.from({length: 9}, (_, r) => [r, c]));
+        }
+
+        boxes() {
+            const b = [];
+            for (let br = 0; br < 9; br += 3) for (let bc = 0; bc < 9; bc += 3) {
+                const cells = [];
+                for (let r = br; r < br + 3; r++) for (let c = bc; c < bc + 3; c++) cells.push([r, c]);
+                b.push(cells);
             }
+            return b;
         }
 
-        updateProgress() {
-            const progress = (this.solveSteps / this.maxSteps) * 100;
-            document.getElementById('progress-fill').style.width = `${Math.min(progress, 100)}%`;
-            document.getElementById('progress-text').textContent = `Solving... ${this.solveSteps} steps`
-        }
-
-        async solve() {
-            if (this.solving) return;
-            if (!this.isPuzzleValid()) {
-                this.showToast('Please fix errors before solving!', 'error');
-                return
+// --- String I/O ---
+        importString() {
+            const raw = document.getElementById('str-input').value.replace(/[\s\n\r]/g, '').replace(/\./g, '0');
+            document.getElementById('str-err').textContent = '';
+            if (!/^[0-9]{81}$/.test(raw)) {
+                document.getElementById('str-err').textContent = 'Need exactly 81 digits (0-9 or .)';
+                return;
             }
-            this.solving = true;
-            this.setButtonLoading('solve-btn', true);
-            this.setStatus('🔄 Solving puzzle...', 'text-blue-600');
-            const gridCopy = this.grid.map(row => [...row]);
-            const startTime = performance.now();
-            const solved = await this.solveBacktrack(gridCopy);
-            const endTime = performance.now();
-            if (solved) {
-                this.grid = gridCopy;
-                this.updateDisplay();
-                this.showToast(`Puzzle solved in ${(endTime - startTime).toFixed(1)}ms!`, 'success');
-                this.setStatus('✅ Puzzle solved instantly!', 'text-green-600')
-            } else {
-                this.showToast('No solution exists for this puzzle!', 'error');
-                this.setStatus('❌ No solution found', 'text-red-600')
+            this.loadFromString(raw);
+            this.setStatus('Puzzle imported', 'ok');
+        }
+
+        loadFromString(s) {
+            s = s.replace(/\./g, '0');
+            this.pushUndo();
+            this.given.clear();
+            this.candidates = Array.from({length: 9}, () => Array.from({length: 9}, () => new Set()));
+            for (let i = 0; i < 81; i++) {
+                const r = i / 9 | 0, c = i % 9, v = +s[i];
+                this.grid[r][c] = v;
+                if (v) this.given.add(i);
             }
-            this.solving = false;
-            this.setButtonLoading('solve-btn', false)
+            document.getElementById('diff-label').textContent = '';
+            this.renderAll();
         }
 
-        async solveStepByStep() {
-            if (this.solving) return;
-            if (!this.isPuzzleValid()) {
-                this.showToast('Please fix errors before solving!', 'error');
-                return
+        exportString() {
+            const s = this.grid.flat().join('');
+            document.getElementById('str-input').value = s;
+            navigator.clipboard?.writeText(s);
+            this.setStatus('Copied to clipboard', 'ok');
+        }
+
+// --- Sample / Clear ---
+        loadSample(n) {
+            const s = this.samples[n];
+            if (!s) return;
+            this.undoStack = [];
+            this.redoStack = [];
+            this.given.clear();
+            this.candidates = Array.from({length: 9}, () => Array.from({length: 9}, () => new Set()));
+            for (let i = 0; i < 81; i++) {
+                const r = i / 9 | 0, c = i % 9, v = +s[i];
+                this.grid[r][c] = v;
+                if (v) this.given.add(i);
             }
-            this.solving = true;
-            this.solveSteps = 0;
-            this.maxSteps = this.estimateSteps();
-            this.setButtonLoading('step-btn', true);
-            this.showProgress(true);
-            this.setStatus('🎬 Solving step by step...', 'text-purple-600');
-            const gridCopy = this.grid.map(row => [...row]);
-            const solved = await this.solveBacktrack(gridCopy, true);
-            if (solved) {
-                this.grid = gridCopy;
-                this.showToast('Puzzle solved step by step!', 'success');
-                this.setStatus('🎉 Step-by-step solution complete!', 'text-green-600')
-            } else {
-                this.showToast('No solution exists!', 'error');
-                this.setStatus('❌ No solution found', 'text-red-600')
-            }
-            this.solving = false;
-            this.setButtonLoading('step-btn', false);
-            this.showProgress(false)
-        }
-
-        estimateSteps() {
-            let empty = 0;
-            for (let row = 0; row < 9; row++) {
-                for (let col = 0; col < 9; col++) {
-                    if (this.grid[row][col] === 0) empty++
-                }
-            }
-            return empty * 20
-        }
-
-        isPuzzleValid() {
-            for (let row = 0; row < 9; row++) {
-                for (let col = 0; col < 9; col++) {
-                    if (this.grid[row][col] !== 0 && !this.validateCell(row, col)) return false
-                }
-            }
-            return true
-        }
-
-        setButtonLoading(btnId, loading) {
-            const btn = document.getElementById(btnId);
-            btn.classList.toggle('loading', loading);
-            btn.disabled = loading
-        }
-
-        showProgress(show) {
-            document.getElementById('progress-container').classList.toggle('hidden', !show);
-            if (!show) {
-                document.getElementById('progress-fill').style.width = '0%';
-                document.getElementById('progress-text').textContent = 'Solving...'
-            }
-        }
-
-        setStatus(message, className) {
-            const status = document.getElementById('status');
-            status.textContent = message;
-            status.className = `text-center text-xl font-bold min-h-[2rem] ${className}`
-        }
-
-        showToast(message, type = 'info', duration = 3000) {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = `
-<div class="flex items-center">
-<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'} mr-3"></i>
-<span>${message}</span>
-</div>`;
-            document.getElementById('toast-container').appendChild(toast);
-            setTimeout(() => toast.classList.add('show'), 100);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300)
-            }, duration)
-        }
-
-        sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms))
+            document.getElementById('diff-label').textContent = n === 1 ? 'Medium' : 'Hard';
+            this.renderAll();
+            this.updateUndoButtons();
+            this.setStatus('');
         }
 
         clear() {
-            this.grid = Array(9).fill().map(() => Array(9).fill(0));
-            this.originalGrid = Array(9).fill().map(() => Array(9).fill(0));
-            this.updateDisplay();
-            this.setStatus('', '');
-            this.showProgress(false);
-            document.querySelectorAll('.sudoku-cell').forEach(cell => {
-                cell.classList.remove('given', 'error', 'solved', 'highlighted')
-            })
+            this.pushUndo();
+            this.grid = Array.from({length: 9}, () => Array(9).fill(0));
+            this.candidates = Array.from({length: 9}, () => Array.from({length: 9}, () => new Set()));
+            this.given.clear();
+            document.getElementById('diff-label').textContent = '';
+            this.renderAll();
+            this.setStatus('');
         }
 
-        loadSample(index) {
-            this.clear();
-            this.grid = this.samplePuzzles[index].map(row => [...row]);
-            this.originalGrid = this.samplePuzzles[index].map(row => [...row]);
-            this.updateDisplay();
-            document.querySelectorAll('.sudoku-cell').forEach((cell, i) => {
-                const row = Math.floor(i / 9);
-                const col = i % 9;
-                if (this.originalGrid[row][col] !== 0) {
-                    cell.classList.add('given')
-                }
-            });
-            const levels = ['Easy', 'Medium', 'Hard'];
-            this.showToast(`${levels[index]} puzzle loaded!`, 'info');
-            this.setStatus(`📋 ${levels[index]} puzzle ready to solve`, 'text-gray-600')
-        }
-
-        updateDisplay() {
-            document.querySelectorAll('.sudoku-cell').forEach((cell, index) => {
-                const row = Math.floor(index / 9);
-                const col = index % 9;
-                const value = this.grid[row][col];
-                cell.value = value || '';
-                if (value > 0 && !cell.classList.contains('given')) {
-                    cell.classList.add('solved')
-                }
-            })
+        setStatus(msg, cls) {
+            const el = document.getElementById('status');
+            el.textContent = msg;
+            el.className = 'status' + (cls ? ' ' + cls : '');
         }
     }
 
-    new SudokuSolverPro();
+    new SudokuSolver();
 </script>
 <script src="../logo.js"></script>
 </body>
