@@ -3147,5 +3147,23 @@
       "data",
       "developer"
     ]
+  },
+  {
+    "id": "app_creator",
+    "title": "AI App Creator",
+    "description": "Describe any app idea and instantly generate a fully functional single-page HTML app using AI. Refine iteratively, edit code inline, save to your gallery, and share via URL or QR code.",
+    "url": "tools\\app_creator.html",
+    "screenshot": "screenshots/screenshot_261.webp",
+    "type": "tool",
+    "aiPowered": true,
+    "featured": true,
+    "date": "2026-04-13",
+    "categories": [
+      "generator"
+    ],
+    "tags": [
+      "developer",
+      "creative"
+    ]
   }
 ]
