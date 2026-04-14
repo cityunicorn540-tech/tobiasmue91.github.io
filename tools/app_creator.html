@@ -10,7 +10,7 @@
     <meta name="author" content="Claude Opus 4.6 prompted by Tobias Müller">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://www.gptgames.dev/tools/app_creator.html">
-    <meta property="og:title" content="AI App Creator — Describe, Generate, Refine, Ship">
+    <meta property="og:title" content="AI App Creator — Describe,Generate,Refine,Ship">
     <meta property="og:description"
           content="Turn any idea into a working web app in seconds. Describe what you want,generate it with AI,refine it conversationally,and share it instantly via URL or QR code.">
     <meta property="og:type" content="website">
@@ -19,7 +19,7 @@
     <meta property="og:image:alt" content="AI App Creator interface showing the app generation and preview workflow">
     <meta property="og:site_name" content="GPTGames">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AI App Creator — Describe, Generate, Refine, Ship">
+    <meta name="twitter:title" content="AI App Creator — Describe,Generate,Refine,Ship">
     <meta name="twitter:description"
           content="Turn any idea into a working web app in seconds. Describe what you want,generate it with AI,refine it conversationally,and share it instantly.">
     <meta name="twitter:image" content="https://www.gptgames.dev/screenshots/screenshot_261.webp">
@@ -119,7 +119,7 @@
     .creator-header h1 {
         font-size: 28px;
         font-weight: 700;
-        letter-spacing: -0.03em;
+        letter-spacing: -0.02em;
         margin-bottom: 4px;
     }
 
@@ -211,44 +211,28 @@
         min-height: 24px;
     }
 
-    .enhance-btn {
-        background: none;
-        border: none;
-        color: var(--accent);
-        font-size: 12px;
-        font-family: var(--font);
-        padding: 2px 0;
-        opacity: 0.8;
-        transition: opacity 0.15s;
+    .api-badge {
+        font-size: 11px;
+        color: var(--success);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
     }
 
-    .enhance-btn:hover:not(:disabled) {
+    .api-badge.visible {
         opacity: 1;
-    }
-
-    .enhance-btn:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-    }
-
-    .enhance-undo {
-        background: none;
-        border: none;
-        color: var(--text2);
-        font-size: 12px;
-        font-family: var(--font);
-        padding: 2px 0;
-        text-decoration: underline;
-    }
-
-    .enhance-undo:hover {
-        color: var(--text);
+        pointer-events: auto;
     }
 
     .options-row {
         display: flex;
         gap: 16px;
         margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
         align-items: center;
         flex-wrap: wrap;
     }
@@ -276,21 +260,65 @@
         border-color: var(--accent);
     }
 
-    .api-badge {
-        font-size: 11px;
-        color: var(--success);
-        display: none;
+    .info-icon {
+        display: inline-flex;
         align-items: center;
-        gap: 4px;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        font-size: 10px;
+        color: var(--text2);
+        cursor: help;
+        position: relative;
+        flex-shrink: 0;
     }
 
-    .api-badge.visible {
-        display: inline-flex;
+    .info-icon:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+    }
+
+    .info-tooltip {
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--text);
+        color: var(--bg);
+        font-size: 11px;
+        padding: 6px 10px;
+        border-radius: 6px;
+        white-space: normal;
+        width: 200px;
+        text-align: center;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.15s;
+        z-index: 50;
+        line-height: 1.4;
+        font-weight: 400;
+    }
+
+    .info-icon:hover .info-tooltip {
+        opacity: 1;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 0;
+        margin-top: 16px;
+    }
+
+    .btn-group #createBtn {
+        flex: 3;
+        border-radius: 8px 0 0 8px;
+        margin: 0;
     }
 
     #createBtn {
         width: 100%;
-        margin-top: 16px;
         padding: 12px;
         border: none;
         border-radius: 8px;
@@ -320,6 +348,51 @@
         font-weight: 400;
     }
 
+    .btn-group .enhance-btn-group {
+        flex: 1;
+        padding: 12px 8px;
+        border: 1px solid var(--accent);
+        border-left: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 0 8px 8px 0;
+        background: transparent;
+        color: var(--accent);
+        font-size: 13px;
+        font-weight: 500;
+        font-family: var(--font);
+        transition: background 0.15s, opacity 0.15s;
+        white-space: nowrap;
+    }
+
+    .btn-group .enhance-btn-group:hover:not(:disabled) {
+        background: color-mix(in srgb, var(--accent) 8%, transparent);
+    }
+
+    .btn-group .enhance-btn-group:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+    .enhance-undo-row {
+        margin-top: 6px;
+        text-align: right;
+        min-height: 20px;
+    }
+
+    .enhance-undo {
+        background: none;
+        border: none;
+        color: var(--text2);
+        font-size: 12px;
+        font-family: var(--font);
+        padding: 2px 0;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .enhance-undo:hover {
+        color: var(--text);
+    }
+
     .progress-indicator {
         display: none;
         margin-top: 16px;
@@ -335,14 +408,24 @@
         background: var(--border);
         border-radius: 2px;
         overflow: hidden;
+        position: relative;
     }
 
     .progress-fill {
         height: 100%;
-        width: 0%;
+        width: 30%;
         background: var(--accent);
-        transition: width 0.6s ease;
         border-radius: 2px;
+        animation: indeterminate 1.5s ease-in-out infinite;
+    }
+
+    @keyframes indeterminate {
+        0% {
+            transform: translateX(-100%);
+        }
+        100% {
+            transform: translateX(400%);
+        }
     }
 
     .progress-text {
@@ -381,6 +464,11 @@
 
     .templates-section {
         margin-bottom: 32px;
+        position: relative;
+    }
+
+    .templates-scroll-wrapper {
+        position: relative;
     }
 
     .templates-scroll {
@@ -389,6 +477,7 @@
         overflow-x: auto;
         padding-bottom: 4px;
         scrollbar-width: thin;
+        scroll-behavior: smooth;
     }
 
     .templates-scroll::-webkit-scrollbar {
@@ -398,6 +487,66 @@
     .templates-scroll::-webkit-scrollbar-thumb {
         background: var(--border);
         border-radius: 2px;
+    }
+
+    .templates-scroll-wrapper::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 4px;
+        width: 40px;
+        background: linear-gradient(to right, transparent, var(--bg));
+        pointer-events: none;
+        transition: opacity 0.2s;
+        z-index: 2;
+    }
+
+    .templates-scroll-wrapper.scrolled-end::after {
+        opacity: 0;
+    }
+
+    .scroll-arrow {
+        display: none;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text);
+        font-size: 16px;
+        align-items: center;
+        justify-content: center;
+        z-index: 3;
+        box-shadow: var(--shadow);
+        cursor: pointer;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .scroll-arrow:hover {
+        border-color: var(--accent);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .scroll-arrow.left {
+        left: -12px;
+    }
+
+    .scroll-arrow.right {
+        right: -12px;
+    }
+
+    @media (hover: hover) {
+        .scroll-arrow {
+            display: flex;
+        }
+
+        .scroll-arrow.hidden {
+            display: none;
+        }
     }
 
     .template-card {
@@ -469,6 +618,21 @@
         color: var(--text);
     }
 
+    .gallery-empty {
+        text-align: center;
+        padding: 32px 16px;
+        color: var(--text2);
+    }
+
+    .gallery-empty svg {
+        margin-bottom: 12px;
+        opacity: 0.4;
+    }
+
+    .gallery-empty p {
+        font-size: 13px;
+    }
+
     .gallery-grid {
         display: grid;
         grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
@@ -490,6 +654,10 @@
         box-shadow: var(--shadow);
     }
 
+    .gallery-card:hover .g-thumb img {
+        transform: scale(1.03);
+    }
+
     .gallery-card .g-thumb {
         width: 100%;
         height: 100px;
@@ -504,6 +672,7 @@
         height: 100%;
         object-fit: cover;
         display: block;
+        transition: transform 0.2s ease;
     }
 
     .gallery-card .g-name {
@@ -525,9 +694,23 @@
         margin-bottom: 4px;
     }
 
+    .gallery-card .g-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
     .gallery-card .g-date {
         font-size: 11px;
         color: var(--text2);
+    }
+
+    .gallery-card .g-versions {
+        font-size: 10px;
+        color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 10%, transparent);
+        padding: 1px 6px;
+        border-radius: 4px;
     }
 
     .gallery-card .kebab {
@@ -557,7 +740,7 @@
         border-radius: 8px;
         box-shadow: var(--shadow-lg);
         z-index: 10;
-        min-width: 120px;
+        min-width: 140px;
         overflow: hidden;
         animation: fadeIn 0.1s ease;
     }
@@ -650,6 +833,10 @@
         flex-shrink: 0;
     }
 
+    .tb-primary {
+        margin-right: 4px;
+    }
+
     .tb-btn {
         display: inline-flex;
         align-items: center;
@@ -685,6 +872,15 @@
         border-color: var(--accent);
     }
 
+    .tb-btn.save-accent {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+
+    .tb-btn.save-accent:hover {
+        background: color-mix(in srgb, var(--accent) 8%, transparent);
+    }
+
     .tb-btn svg {
         width: 16px;
         height: 16px;
@@ -695,6 +891,50 @@
         display: inline;
     }
 
+    .overflow-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: 4px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: var(--shadow-lg);
+        z-index: 20;
+        min-width: 160px;
+        overflow: hidden;
+        animation: fadeIn 0.1s ease;
+        display: none;
+    }
+
+    .overflow-menu.open {
+        display: block;
+    }
+
+    .overflow-menu button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 10px 14px;
+        border: none;
+        background: none;
+        color: var(--text);
+        font-size: 13px;
+        text-align: left;
+        font-family: var(--font);
+    }
+
+    .overflow-menu button:hover {
+        background: var(--bg);
+    }
+
+    .overflow-menu button svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+    }
+
     @media (max-width: 640px) {
         .tb-label {
             display: none;
@@ -702,6 +942,10 @@
 
         .tb-btn {
             padding: 6px 8px;
+        }
+
+        .tb-secondary .tb-btn:not(#overflowBtn) {
+            display: none;
         }
     }
 
@@ -759,26 +1003,83 @@
         flex-direction: column;
         overflow: hidden;
         min-height: 0;
+        position: relative;
     }
 
     #previewFrame {
         flex: 1;
         width: 100%;
         border: none;
-        background: #fff;
-        min-height: 0;
+        background: var(--bg);
+        min-height: 200px;
+    }
+
+    .iframe-loading {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg);
+        z-index: 5;
+        transition: opacity 0.3s;
+    }
+
+    .iframe-loading.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .iframe-spinner {
+        width: 24px;
+        height: 24px;
+        border: 3px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
     }
 
     .code-editor {
         display: none;
         flex-direction: column;
-        height: 40vh;
-        min-height: 200px;
+        max-height: 35vh;
+        min-height: 150px;
         border-top: 1px solid var(--border);
+        position: relative;
     }
 
     .code-editor.open {
         display: flex;
+    }
+
+    .code-editor-handle {
+        height: 10px;
+        cursor: ns-resize;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+        user-select: none;
+    }
+
+    .code-editor-handle:hover .handle-bar {
+        background: var(--accent);
+    }
+
+    .handle-bar {
+        width: 40px;
+        height: 3px;
+        border-radius: 2px;
+        background: var(--border);
+        transition: background 0.15s;
     }
 
     .code-editor-header {
@@ -843,7 +1144,7 @@
         border-top: 1px solid var(--border);
         background: var(--surface);
         flex-shrink: 0;
-        max-height: 200px;
+        max-height: 240px;
     }
 
     body.state-preview .refinement-panel {
@@ -859,6 +1160,10 @@
 
     .refinement-history:empty {
         display: none;
+    }
+
+    .refinement-history.collapsed {
+        display: none !important;
     }
 
     .refine-item {
@@ -887,12 +1192,63 @@
         opacity: 0.7;
     }
 
+    .history-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--text2);
+        font-size: 12px;
+        padding: 4px 12px;
+        font-family: var(--font);
+        text-align: left;
+    }
+
+    .history-toggle:hover {
+        color: var(--text);
+    }
+
+    .history-toggle.visible {
+        display: block;
+    }
+
+    .suggestion-chips {
+        display: flex;
+        gap: 6px;
+        padding: 4px 12px 4px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        flex-shrink: 0;
+    }
+
+    .suggestion-chips::-webkit-scrollbar {
+        display: none;
+    }
+
+    .suggestion-chip {
+        flex-shrink: 0;
+        padding: 4px 12px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: transparent;
+        color: var(--text2);
+        font-size: 11px;
+        font-family: var(--font);
+        transition: border-color 0.15s, color 0.15s;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+    .suggestion-chip:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+
     .refinement-input-row {
         display: flex;
         gap: 8px;
         padding: 10px 12px;
         border-top: 1px solid var(--border);
-        align-items: center;
+        align-items: flex-end;
     }
 
     #refineInput {
@@ -905,6 +1261,11 @@
         font-size: 13px;
         font-family: var(--font);
         outline: none;
+        resize: none;
+        min-height: 40px;
+        max-height: 100px;
+        line-height: 1.5;
+        overflow-y: auto;
     }
 
     #refineInput:focus {
@@ -924,6 +1285,7 @@
         font-size: 13px;
         font-weight: 500;
         transition: background 0.15s;
+        align-self: flex-end;
     }
 
     #refineBtn:hover:not(:disabled) {
@@ -935,11 +1297,51 @@
         cursor: not-allowed;
     }
 
+    .refine-loading {
+        display: none;
+        padding: 4px 12px;
+    }
+
+    .refine-loading.active {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        justify-content: center;
+    }
+
+    .refine-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: pulseDot 1.2s ease-in-out infinite;
+    }
+
+    .refine-dot:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .refine-dot:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes pulseDot {
+        0%, 100% {
+            opacity: 0.3;
+            transform: scale(0.8);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+    }
+
     .refine-actions {
         display: flex;
         gap: 12px;
         padding: 0 12px 8px;
         font-size: 12px;
+        align-items: center;
     }
 
     .refine-actions button {
@@ -949,6 +1351,7 @@
         font-size: 12px;
         font-family: var(--font);
         text-decoration: underline;
+        cursor: pointer;
     }
 
     .refine-actions button:hover {
@@ -1121,12 +1524,47 @@
         color: var(--error);
     }
 
+    .url-details {
+        display: none;
+        margin-top: 12px;
+    }
+
+    .url-details.open {
+        display: block;
+    }
+
+    .url-details-toggle {
+        background: none;
+        border: none;
+        color: var(--text2);
+        font-size: 12px;
+        font-family: var(--font);
+        cursor: pointer;
+        padding: 0;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .url-details-toggle:hover {
+        color: var(--text);
+    }
+
     .qr-container {
         margin-top: 16px;
         text-align: center;
     }
 
     .qr-container img, .qr-container canvas {
+        border-radius: 8px;
+    }
+
+    .qr-fallback {
+        font-size: 12px;
+        color: var(--text2);
+        padding: 12px;
+        background: var(--bg);
         border-radius: 8px;
     }
 
@@ -1190,9 +1628,15 @@
         color: var(--error);
     }
 
+    .confirm-modal-body {
+        font-size: 14px;
+        color: var(--text);
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
     .toast {
         position: fixed;
-        bottom: 20px;
         left: 50%;
         transform: translateX(-50%) translateY(12px);
         background: var(--text);
@@ -1205,6 +1649,8 @@
         z-index: 2000;
         pointer-events: none;
         white-space: nowrap;
+        top: 20px;
+        bottom: auto;
     }
 
     .toast.show {
@@ -1241,7 +1687,6 @@
     }</style>
 </head>
 <body class="state-creator">
-
 <div class="creator-view">
     <div class="creator-container">
         <div class="creator-header"><h1><span class="hi">AI</span> App Creator</h1>
@@ -1251,22 +1696,27 @@
         </div>
         <div class="input-section"><textarea id="appDescription"
                                              placeholder="Describe the app you want to create... e.g. A habit tracker with weekly view, streak counter, and dark mode"></textarea>
-            <div class="enhance-row"><span class="api-badge" id="apiBadge">&#x2713; Using your API key</span>
-                <button class="enhance-undo" id="enhanceUndo" style="display:none;">Undo enhancement</button>
-                <button class="enhance-btn" id="enhanceBtn" disabled>Enhance &#x2728;</button>
-            </div>
-            <div class="options-row"><label>Color Scheme<select id="colorScheme">
+            <div class="enhance-row"><span class="api-badge" id="apiBadge">&#x2713; Using your API key</span></div>
+            <div class="options-row"><label>Color Scheme <span class="info-icon"><span class="info-tooltip">Controls whether the generated app uses light, dark, or automatic theme switching.</span>&#x24D8;</span><select
+                    id="colorScheme">
                 <option value="auto">Auto</option>
                 <option value="light">Light</option>
                 <option value="dark">Dark</option>
-            </select></label><label>Complexity<select id="complexity">
+            </select></label><label>Complexity <span class="info-icon"><span class="info-tooltip">Simple creates a basic version. Feature-Rich adds more interactive elements and polish.</span>&#x24D8;</span><select
+                    id="complexity">
                 <option value="standard">Standard</option>
                 <option value="simple">Simple</option>
                 <option value="feature-rich">Feature-Rich</option>
             </select></label></div>
-            <button id="createBtn" disabled><span id="createBtnText">Create App</span><span class="btn-shortcut"
-                                                                                            id="shortcutHint"></span>
-            </button>
+            <div class="btn-group">
+                <button id="createBtn" disabled><span id="createBtnText">Create App</span><span class="btn-shortcut"
+                                                                                                id="shortcutHint"></span>
+                </button>
+                <button class="enhance-btn-group" id="enhanceBtn" disabled>Enhance &#x2728;</button>
+            </div>
+            <div class="enhance-undo-row">
+                <button class="enhance-undo" id="enhanceUndo" style="display:none;">Undo enhancement</button>
+            </div>
             <div class="progress-indicator" id="progressIndicator">
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill"></div>
@@ -1277,9 +1727,15 @@
         </div>
         <div class="templates-section">
             <div class="section-title">Start with a template</div>
-            <div class="templates-scroll" id="templatesScroll"></div>
+            <div class="templates-scroll-wrapper" id="templatesWrapper">
+                <button class="scroll-arrow left hidden" id="scrollLeft" aria-label="Scroll templates left">&#x2039;
+                </button>
+                <div class="templates-scroll" id="templatesScroll"></div>
+                <button class="scroll-arrow right" id="scrollRight" aria-label="Scroll templates right">&#x203A;
+                </button>
+            </div>
         </div>
-        <div class="gallery-section" id="gallerySection" style="display:none;">
+        <div class="gallery-section" id="gallerySection">
             <div class="gallery-header">
                 <div class="section-title">Your Apps</div>
                 <div class="gallery-actions">
@@ -1288,6 +1744,11 @@
                     <input type="file" id="importFileInput" accept=".json" style="display:none;"></div>
             </div>
             <div class="gallery-grid" id="galleryGrid"></div>
+            <div class="gallery-empty" id="galleryEmpty" style="display:none;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+                </svg>
+                <p>No apps yet. Create your first one above!</p></div>
         </div>
         <div class="creator-footer"><span>Part of <a href="https://www.gptgames.dev/" target="_blank" rel="noopener">GPTGames</a> &mdash; 250+ AI generated and browser-based tools &amp; games &mdash; <a
                 href="https://github.com/TobiasMue91/tobiasmue91.github.io" target="_blank"
@@ -1296,31 +1757,34 @@
         </div>
     </div>
 </div>
-
 <div class="preview-view">
     <div class="preview-toolbar"><input class="app-name" id="previewAppName" value="My App" spellcheck="false">
-        <div class="tb">
-            <button class="tb-btn" id="saveBtn" title="Save to gallery">
+        <div class="tb tb-primary">
+            <button class="tb-btn save-accent" id="saveBtn" title="Save to gallery (Ctrl+S)"
+                    aria-label="Save to gallery">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
                     <polyline points="17 21 17 13 7 13 7 21"/>
                     <polyline points="7 3 7 8 15 8"/>
                 </svg>
                 <span class="tb-label">Save</span></button>
-            <button class="tb-btn primary" id="shareBtn" title="Share">
+            <button class="tb-btn primary" id="shareBtn" title="Share" aria-label="Share app">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/>
                     <polyline points="16 6 12 2 8 6"/>
                     <line x1="12" y1="2" x2="12" y2="15"/>
                 </svg>
                 <span class="tb-label">Share</span></button>
-            <button class="tb-btn" id="codeToggleBtn" title="Toggle code editor">
+        </div>
+        <div class="tb tb-secondary">
+            <button class="tb-btn" id="codeToggleBtn" title="Toggle code editor (Escape to close)"
+                    aria-label="Toggle code editor">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="16 18 22 12 16 6"/>
                     <polyline points="8 6 2 12 8 18"/>
                 </svg>
                 <span class="tb-label">Code</span></button>
-            <button class="tb-btn" id="historyBtn" title="Version history">
+            <button class="tb-btn" id="historyBtn" title="Version history" aria-label="Version history">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"/>
                     <polyline points="12 6 12 12 16 14"/>
@@ -1328,35 +1792,55 @@
                 <span class="tb-label">History</span>
                 <div class="version-dropdown" id="versionDropdown"></div>
             </button>
-            <button class="tb-btn" id="downloadBtn" title="Download HTML">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-                <span class="tb-label">Download</span></button>
-            <button class="tb-btn" id="pwaExportBtn" title="Export as PWA">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-                    <line x1="12" y1="18" x2="12.01" y2="18"/>
-                </svg>
-                <span class="tb-label">PWA</span></button>
-            <button class="tb-btn" id="newAppBtn" title="New app">
+            <button class="tb-btn" id="newAppBtn" title="New app" aria-label="Create new app">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="12" y1="5" x2="12" y2="19"/>
                     <line x1="5" y1="12" x2="19" y2="12"/>
                 </svg>
                 <span class="tb-label">New</span></button>
+            <button class="tb-btn" id="overflowBtn" title="More actions" aria-label="More actions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="5" r="1.5"/>
+                    <circle cx="12" cy="12" r="1.5"/>
+                    <circle cx="12" cy="19" r="1.5"/>
+                </svg>
+                <div class="overflow-menu" id="overflowMenu">
+                    <button id="downloadBtnOv" aria-label="Download HTML">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download HTML
+                    </button>
+                    <button id="pwaExportBtnOv" aria-label="Export as PWA">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                            <line x1="12" y1="18" x2="12.01" y2="18"/>
+                        </svg>
+                        Export as PWA
+                    </button>
+                </div>
+            </button>
         </div>
     </div>
     <div class="preview-main">
+        <div class="iframe-loading" id="iframeLoading">
+            <div class="iframe-spinner"></div>
+        </div>
         <iframe id="previewFrame" sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe>
         <div class="code-editor" id="codeEditor">
+            <div class="code-editor-handle" id="codeEditorHandle">
+                <div class="handle-bar"></div>
+            </div>
             <div class="code-editor-header"><span>Code Editor</span>
                 <div class="ce-actions">
-                    <button class="tb-btn" id="applyCodeBtn" style="font-size:12px;padding:4px 10px;">Apply Changes
+                    <button class="tb-btn" id="applyCodeBtn" style="font-size:12px;padding:4px 10px;"
+                            aria-label="Apply code changes">Apply Changes
                     </button>
-                    <button class="tb-btn" id="closeCodeBtn" style="font-size:12px;padding:4px 10px;">Close</button>
+                    <button class="tb-btn" id="closeCodeBtn" style="font-size:12px;padding:4px 10px;"
+                            aria-label="Close code editor">Close
+                    </button>
                 </div>
             </div>
             <div class="code-editor-body">
@@ -1366,17 +1850,30 @@
         </div>
     </div>
     <div class="refinement-panel">
+        <button class="history-toggle" id="historyToggle" aria-label="Toggle refinement history">&#x25B2; Show history
+        </button>
         <div class="refinement-history" id="refineHistory"></div>
-        <div class="refinement-input-row"><input type="text" id="refineInput"
-                                                 placeholder="Describe a change... e.g. make buttons larger, add dark mode">
-            <button id="refineBtn">Refine</button>
+        <div class="suggestion-chips" id="suggestionChips">
+            <button class="suggestion-chip">Add dark mode</button>
+            <button class="suggestion-chip">Make it mobile-friendly</button>
+            <button class="suggestion-chip">Improve accessibility</button>
+            <button class="suggestion-chip">Add animations</button>
+            <button class="suggestion-chip">Add localStorage</button>
         </div>
+        <div class="refinement-input-row"><textarea id="refineInput" rows="1"
+                                                    placeholder="Describe a change... e.g. make buttons larger, add dark mode"></textarea>
+            <button id="refineBtn" aria-label="Refine app">Refine</button>
+        </div>
+        <div class="refine-loading" id="refineLoading"><span class="refine-dot"></span><span
+                class="refine-dot"></span><span class="refine-dot"></span></div>
         <div class="refine-actions">
-            <button id="startOverBtn">Start over refinements</button>
+            <button id="startOverBtn"
+                    title="Clears the conversation history used for refinements. The app itself won't be changed.">Clear
+                refinement history
+            </button>
         </div>
     </div>
 </div>
-
 <div class="shared-view">
     <iframe id="sharedFrame" sandbox="allow-scripts allow-modals allow-forms allow-popups"></iframe>
     <div class="shared-badge"><a id="badgeLink" href="#">Built with AI App Creator</a>
@@ -1389,29 +1886,39 @@
     </div>
     <pre id="sourceCode"></pre>
 </div>
-
 <div class="error-view"><h2>Link Broken</h2>
     <p>This share link appears to be corrupted or incomplete.</p>
     <button class="tb-btn primary" onclick="location.href=location.pathname">Go to App Creator</button>
 </div>
-
-<!-- Share Modal -->
 <div class="modal-overlay" id="shareModal">
     <div class="modal"><h3>Share Your App</h3>
-        <div class="url-display" id="shareUrl"></div>
-        <div class="url-meta"><span id="urlLength"></span><span id="urlSize"></span></div>
-        <div class="url-warning" id="urlWarning" style="display:none">This URL is very long and may not work in all
-            browsers or messengers.
-        </div>
         <div class="qr-container" id="qrContainer"></div>
+        <button class="url-details-toggle" id="urlDetailsToggle">Show URL details &#x25BC;</button>
+        <div class="url-details" id="urlDetails">
+            <div class="url-display" id="shareUrl"></div>
+            <div class="url-meta"><span id="urlLength"></span><span id="urlSize"></span></div>
+            <div class="url-warning" id="urlWarning" style="display:none">This URL is very long and may not work in all
+                browsers or messengers.
+            </div>
+        </div>
         <div class="modal-actions">
             <button class="tb-btn primary" id="copyShareUrl">Copy Link</button>
+            <button class="tb-btn" id="openShareTab">Open in new tab</button>
             <button class="tb-btn" id="closeModal">Close</button>
         </div>
     </div>
 </div>
-
-<!-- API Settings Modal -->
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal"><h3>Unsaved Changes</h3>
+        <p class="confirm-modal-body">You have unsaved changes. Discard and start fresh?</p>
+        <div class="modal-actions">
+            <button class="tb-btn" id="confirmCancel">Cancel</button>
+            <button class="tb-btn primary" id="confirmDiscard"
+                    style="background:var(--error);border-color:var(--error);">Discard
+            </button>
+        </div>
+    </div>
+</div>
 <div class="modal-overlay" id="apiSettingsModal">
     <div class="modal"><h3>API Settings</h3>
         <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">Optionally use your own OpenAI-compatible API
@@ -1432,9 +1939,7 @@
         </div>
     </div>
 </div>
-
 <div class="toast" id="toast"></div>
-
 <script>(function () {
     'use strict';
     const API_URL = 'https://chatgpt.tobiasmue91.workers.dev/';
@@ -1445,8 +1950,6 @@
     const MAX_GALLERY = 30;
     const MAX_VERSIONS = 3;
     const isMac = /Mac|iPhone|iPad/.test(navigator.userAgent);
-
-// State
     let generatedHTML = '';
     let originalPrompt = '';
     let conversationHistory = [];
@@ -1455,8 +1958,8 @@
     let currentGalleryId = null;
     let openKebabId = null;
     let preEnhanceText = '';
-
-// DOM
+    let hasUnsavedChanges = false;
+    let historyCollapsed = false;
     const $ = id => document.getElementById(id);
     const body = document.body;
     const desc = $('appDescription');
@@ -1489,60 +1992,53 @@
     const enhanceBtn = $('enhanceBtn');
     const enhanceUndo = $('enhanceUndo');
     const versionDropdown = $('versionDropdown');
+    const confirmModal = $('confirmModal');
+    const iframeLoading = $('iframeLoading');
+    const overflowMenu = $('overflowMenu');
+    const historyToggle = $('historyToggle');
+    const refineLoading = $('refineLoading');
+    const templates = [{
+        icon: '\u{1F345}',
+        title: 'Pomodoro Timer',
+        desc: 'Work sessions with breaks & alerts',
+        prompt: 'A Pomodoro productivity timer with 25-minute work sessions and 5-minute breaks, session counter, audio notification when time\'s up, and a minimal clean UI with start/pause/reset controls'
+    }, {
+        icon: '\u{1F40D}',
+        title: 'Snake Game',
+        desc: 'Classic arcade game with scoring',
+        prompt: 'A classic Snake game with arrow key controls, score tracking, increasing speed as the snake grows, game over screen with high score, and a restart button. Use a canvas element.'
+    }, {
+        icon: '\u{1F3A8}',
+        title: 'Color Palette',
+        desc: 'Generate harmonious color schemes',
+        prompt: 'A color palette generator that creates harmonious 5-color palettes with hex and RGB values, one-click copy to clipboard, and options for complementary, analogous, triadic, and random schemes'
+    }, {
+        icon: '\u{1F4DD}',
+        title: 'Markdown Editor',
+        desc: 'Live preview split-pane editor',
+        prompt: 'A split-pane Markdown editor with live preview. Support headings, bold, italic, lists, code blocks, links, and images. Include a toolbar with formatting buttons and a clean minimal interface.'
+    }, {
+        icon: '\u2705',
+        title: 'Task Board',
+        desc: 'Kanban board with drag & drop',
+        prompt: 'A Kanban-style task board with To Do, In Progress, and Done columns. Support drag-and-drop between columns, add/delete tasks, edit task titles inline, and persist everything to localStorage.'
+    }, {
+        icon: '\u{1F3B5}',
+        title: 'Drum Machine',
+        desc: 'Beat pads with step sequencer',
+        prompt: 'A drum machine with 8 sound pads using the Web Audio API for synthesized drum sounds, keyboard shortcuts (keys 1-8), a step sequencer grid with adjustable BPM, play/stop controls, and visual feedback on pad hits.'
+    }, {
+        icon: '\u{1F4CA}',
+        title: 'Habit Tracker',
+        desc: 'Weekly view with streaks',
+        prompt: 'A weekly habit tracker where you can add custom habits, check off each day of the week, see completion percentages per habit, track current streaks, and persist data in localStorage. Show the current week with navigation to previous weeks.'
+    }, {
+        icon: '\u{1F9EE}',
+        title: 'Calculator',
+        desc: 'Scientific calculator with history',
+        prompt: 'A scientific calculator with standard arithmetic, trigonometric functions (sin, cos, tan), square root, power, parentheses, memory operations (M+, M-, MR, MC), calculation history panel, and full keyboard input support.'
+    }];
 
-// Templates
-    const templates = [
-        {
-            icon: '\u{1F345}',
-            title: 'Pomodoro Timer',
-            desc: 'Work sessions with breaks & alerts',
-            prompt: 'A Pomodoro productivity timer with 25-minute work sessions and 5-minute breaks, session counter, audio notification when time\'s up, and a minimal clean UI with start/pause/reset controls'
-        },
-        {
-            icon: '\u{1F40D}',
-            title: 'Snake Game',
-            desc: 'Classic arcade game with scoring',
-            prompt: 'A classic Snake game with arrow key controls, score tracking, increasing speed as the snake grows, game over screen with high score, and a restart button. Use a canvas element.'
-        },
-        {
-            icon: '\u{1F3A8}',
-            title: 'Color Palette',
-            desc: 'Generate harmonious color schemes',
-            prompt: 'A color palette generator that creates harmonious 5-color palettes with hex and RGB values, one-click copy to clipboard, and options for complementary, analogous, triadic, and random schemes'
-        },
-        {
-            icon: '\u{1F4DD}',
-            title: 'Markdown Editor',
-            desc: 'Live preview split-pane editor',
-            prompt: 'A split-pane Markdown editor with live preview. Support headings, bold, italic, lists, code blocks, links, and images. Include a toolbar with formatting buttons and a clean minimal interface.'
-        },
-        {
-            icon: '\u2705',
-            title: 'Task Board',
-            desc: 'Kanban board with drag & drop',
-            prompt: 'A Kanban-style task board with To Do, In Progress, and Done columns. Support drag-and-drop between columns, add/delete tasks, edit task titles inline, and persist everything to localStorage.'
-        },
-        {
-            icon: '\u{1F3B5}',
-            title: 'Drum Machine',
-            desc: 'Beat pads with step sequencer',
-            prompt: 'A drum machine with 8 sound pads using the Web Audio API for synthesized drum sounds, keyboard shortcuts (keys 1-8), a step sequencer grid with adjustable BPM, play/stop controls, and visual feedback on pad hits.'
-        },
-        {
-            icon: '\u{1F4CA}',
-            title: 'Habit Tracker',
-            desc: 'Weekly view with streaks',
-            prompt: 'A weekly habit tracker where you can add custom habits, check off each day of the week, see completion percentages per habit, track current streaks, and persist data in localStorage. Show the current week with navigation to previous weeks.'
-        },
-        {
-            icon: '\u{1F9EE}',
-            title: 'Calculator',
-            desc: 'Scientific calculator with history',
-            prompt: 'A scientific calculator with standard arithmetic, trigonometric functions (sin, cos, tan), square root, power, parentheses, memory operations (M+, M-, MR, MC), calculation history panel, and full keyboard input support.'
-        }
-    ];
-
-// ===== Utils =====
     function showToast(msg) {
         toastEl.textContent = msg;
         toastEl.classList.add('show');
@@ -1567,6 +2063,10 @@
     }
 
     function renderIframe(iframe, html) {
+        iframeLoading.classList.remove('hidden');
+        iframe.onload = () => {
+            setTimeout(() => iframeLoading.classList.add('hidden'), 200);
+        };
         if (html.length < 500000) {
             iframe.srcdoc = html;
         } else {
@@ -1612,7 +2112,6 @@
         return d.innerHTML;
     }
 
-// ===== API Config =====
     function loadApiConfig() {
         try {
             return JSON.parse(localStorage.getItem(API_CONFIG_KEY));
@@ -1634,10 +2133,8 @@
         apiBadge.classList.toggle('visible', !!(config && config.apiKey));
     }
 
-// ===== LLM Call Wrapper =====
     async function callLLM(messages, {maxTokens = 16000, temperature = 0.6} = {}) {
         const config = loadApiConfig();
-        // Try custom endpoint first
         if (config && config.apiKey) {
             try {
                 const res = await fetch(config.endpoint || 'https://api.openai.com/v1/chat/completions', {
@@ -1656,7 +2153,6 @@
                 console.warn('Custom API failed, falling back:', e.message);
             }
         }
-        // Default proxy
         const res = await fetch(API_URL, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -1666,26 +2162,27 @@
         return await res.json();
     }
 
-// ===== Textarea auto-resize =====
     function autoResize() {
         desc.style.height = 'auto';
         desc.style.height = Math.min(desc.scrollHeight, 200) + 'px';
     }
 
-// ===== Progress phases =====
-    const phases = [{text: 'Understanding your idea\u2026', pct: 15, delay: 0}, {
+    function autoResizeRefine() {
+        refineInput.style.height = 'auto';
+        refineInput.style.height = Math.min(refineInput.scrollHeight, 100) + 'px';
+    }
+
+    refineInput.addEventListener('input', autoResizeRefine);
+    const phases = [{text: 'Understanding your idea\u2026', delay: 0}, {
         text: 'Designing the interface\u2026',
-        pct: 40,
         delay: 2000
-    }, {text: 'Writing the code\u2026', pct: 70, delay: 6000}, {text: 'Almost done\u2026', pct: 88, delay: 12000}];
+    }, {text: 'Writing the code\u2026', delay: 6000}, {text: 'Almost done\u2026', delay: 12000}];
 
     function startProgress() {
         stopProgress();
-        progressFill.style.width = '0%';
         progressText.textContent = '';
         phases.forEach(p => {
             const t = setTimeout(() => {
-                progressFill.style.width = p.pct + '%';
                 progressText.textContent = p.text;
             }, p.delay);
             progressTimers.push(t);
@@ -1695,11 +2192,9 @@
     function stopProgress() {
         progressTimers.forEach(clearTimeout);
         progressTimers = [];
-        progressFill.style.width = '100%';
         progressText.textContent = '';
     }
 
-// ===== Gallery =====
     function loadGallery() {
         try {
             return JSON.parse(localStorage.getItem(GALLERY_KEY) || '[]');
@@ -1718,18 +2213,22 @@
 
     function renderGallery() {
         const gallery = loadGallery();
+        const emptyEl = $('galleryEmpty');
         if (!gallery.length) {
-            gallerySection.style.display = 'none';
+            galleryGrid.innerHTML = '';
+            emptyEl.style.display = 'block';
             return;
         }
-        gallerySection.style.display = 'block';
+        emptyEl.style.display = 'none';
         galleryGrid.innerHTML = '';
         gallery.sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
         gallery.forEach(app => {
             const card = document.createElement('div');
             card.className = 'gallery-card';
             const thumbHtml = app.thumbnail ? `<div class="g-thumb"><img src="${app.thumbnail}" alt="" loading="lazy"></div>` : '';
-            card.innerHTML = `${thumbHtml}<div class="g-name">${escHtml(app.name)}</div><div class="g-desc">${escHtml(app.description || '')}</div><div class="g-date">${formatTime(app.createdAt)}</div><button class="kebab" data-id="${app.id}" title="Options">&#8942;</button>`;
+            const vCount = (app.versions && app.versions.length) ? app.versions.length : 0;
+            const vBadge = vCount > 0 ? `<span class="g-versions">${vCount} version${vCount > 1 ? 's' : ''}</span>` : '';
+            card.innerHTML = `${thumbHtml}<div class="g-name">${escHtml(app.name)}</div><div class="g-desc">${escHtml(app.description || '')}</div><div class="g-meta"><span class="g-date">${formatTime(app.createdAt)}</span>${vBadge}</div><button class="kebab" data-id="${app.id}" title="Options" aria-label="Options for ${escHtml(app.name)}">&#8942;</button>`;
             card.addEventListener('click', (e) => {
                 if (e.target.closest('.kebab') || e.target.closest('.kebab-menu')) return;
                 closeKebab();
@@ -1752,6 +2251,7 @@
         originalPrompt = app.description || '';
         conversationHistory = [];
         refinementRequests = [];
+        hasUnsavedChanges = false;
         previewAppName.value = app.name;
         renderRefineHistory();
         setState('preview');
@@ -1768,7 +2268,6 @@
         if (currentGalleryId) {
             const idx = gallery.findIndex(a => a.id === currentGalleryId);
             if (idx !== -1) {
-                // Push previous HTML to versions
                 if (!gallery[idx].versions) gallery[idx].versions = [];
                 if (gallery[idx].html) {
                     gallery[idx].versions.push({
@@ -1782,6 +2281,7 @@
                 gallery[idx].updatedAt = new Date().toISOString();
                 saveGallery(gallery);
                 renderGallery();
+                hasUnsavedChanges = false;
                 showToast('App updated');
                 scheduleThumbCapture(html);
                 return;
@@ -1804,6 +2304,7 @@
         currentGalleryId = id;
         saveGallery(gallery);
         renderGallery();
+        hasUnsavedChanges = false;
         showToast('App saved to gallery');
         scheduleThumbCapture(html);
     }
@@ -1830,7 +2331,21 @@
         }
     }
 
-// ===== Fork App =====
+    function openInNewTab(id) {
+        const gallery = loadGallery();
+        const app = gallery.find(a => a.id === id);
+        if (!app) return;
+        let html;
+        try {
+            html = LZString.decompress(app.html) || app.html;
+        } catch {
+            html = app.html;
+        }
+        const blob = new Blob([html], {type: 'text/html'});
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+    }
+
     function forkGalleryApp(id) {
         const gallery = loadGallery();
         const app = gallery.find(a => a.id === id);
@@ -1860,7 +2375,6 @@
         openKebabId = null;
     }
 
-// Kebab menu
     galleryGrid.addEventListener('click', (e) => {
         const kebab = e.target.closest('.kebab');
         if (!kebab) {
@@ -1877,12 +2391,10 @@
         openKebabId = id;
         const menu = document.createElement('div');
         menu.className = 'kebab-menu';
-        menu.innerHTML = '<button data-action="fork">Fork</button><button data-action="rename">Rename</button><button data-action="delete" class="danger">Delete</button>';
+        menu.innerHTML = '<button data-action="open-tab">Open in new tab</button><button data-action="fork">Fork</button><button data-action="rename">Rename</button><button data-action="delete" class="danger">Delete</button>';
         menu.addEventListener('click', (ev) => {
             const action = ev.target.dataset.action;
-            if (action === 'rename') renameGalleryApp(id);
-            else if (action === 'delete') deleteGalleryApp(id);
-            else if (action === 'fork') forkGalleryApp(id);
+            if (action === 'rename') renameGalleryApp(id); else if (action === 'delete') deleteGalleryApp(id); else if (action === 'fork') forkGalleryApp(id); else if (action === 'open-tab') openInNewTab(id);
             closeKebab();
         });
         kebab.parentElement.appendChild(menu);
@@ -1890,8 +2402,6 @@
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.kebab') && !e.target.closest('.kebab-menu')) closeKebab();
     });
-
-// ===== Gallery Export/Import =====
     $('exportGalleryBtn').addEventListener('click', () => {
         const gallery = loadGallery();
         if (!gallery.length) {
@@ -1907,7 +2417,6 @@
         URL.revokeObjectURL(a.href);
         showToast('Gallery exported');
     });
-
     $('importGalleryBtn').addEventListener('click', () => $('importFileInput').click());
     $('importFileInput').addEventListener('change', (e) => {
         const file = e.target.files[0];
@@ -1939,7 +2448,6 @@
         e.target.value = '';
     });
 
-// ===== Thumbnail Capture =====
     async function captureThumbnail(html) {
         if (typeof html2canvas === 'undefined') return null;
         const container = document.createElement('div');
@@ -1995,7 +2503,6 @@
         }, 1200);
     }
 
-// ===== Code Editor =====
     function updateLineNumbers() {
         const lines = codeTextarea.value.split('\n').length;
         lineNumbers.innerHTML = Array.from({length: lines}, (_, i) => '<div>' + (i + 1) + '</div>').join('');
@@ -2030,19 +2537,79 @@
         if (open) {
             codeTextarea.value = generatedHTML;
             updateLineNumbers();
+            collapseRefineHistory(true);
+        } else {
+            collapseRefineHistory(false);
         }
     });
     $('applyCodeBtn').addEventListener('click', () => {
         generatedHTML = codeTextarea.value;
         renderIframe(previewFrame, generatedHTML);
+        hasUnsavedChanges = true;
         showToast('Changes applied');
     });
     $('closeCodeBtn').addEventListener('click', () => {
         codeEditor.classList.remove('open');
         $('codeToggleBtn').classList.remove('active');
+        collapseRefineHistory(false);
     });
 
-// ===== Refinement =====
+    function collapseRefineHistory(collapse) {
+        historyCollapsed = collapse;
+        if (collapse) {
+            refineHistory.classList.add('collapsed');
+            historyToggle.classList.add('visible');
+            historyToggle.innerHTML = '&#x25B2; Show history';
+        } else {
+            refineHistory.classList.remove('collapsed');
+            historyToggle.classList.remove('visible');
+        }
+    }
+
+    historyToggle.addEventListener('click', () => {
+        const isCollapsed = refineHistory.classList.contains('collapsed');
+        if (isCollapsed) {
+            refineHistory.classList.remove('collapsed');
+            historyToggle.innerHTML = '&#x25BC; Hide history';
+        } else {
+            refineHistory.classList.add('collapsed');
+            historyToggle.innerHTML = '&#x25B2; Show history';
+        }
+    });
+    (function initDragHandle() {
+        const handle = $('codeEditorHandle');
+        let startY, startH;
+
+        function onMouseDown(e) {
+            e.preventDefault();
+            startY = e.clientY || e.touches[0].clientY;
+            startH = codeEditor.offsetHeight;
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+            document.addEventListener('touchmove', onMouseMove, {passive: false});
+            document.addEventListener('touchend', onMouseUp);
+        }
+
+        function onMouseMove(e) {
+            e.preventDefault();
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            const delta = startY - clientY;
+            const newH = Math.max(150, Math.min(window.innerHeight * 0.6, startH + delta));
+            codeEditor.style.maxHeight = newH + 'px';
+            codeEditor.style.height = newH + 'px';
+        }
+
+        function onMouseUp() {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            document.removeEventListener('touchmove', onMouseMove);
+            document.removeEventListener('touchend', onMouseUp);
+        }
+
+        handle.addEventListener('mousedown', onMouseDown);
+        handle.addEventListener('touchstart', onMouseDown, {passive: false});
+    })();
+
     function renderRefineHistory() {
         refineHistory.innerHTML = '';
         refinementRequests.forEach(r => {
@@ -2058,6 +2625,7 @@
         if (!instruction.trim() || !generatedHTML) return;
         refineBtn.disabled = true;
         refineBtn.textContent = 'Refining\u2026';
+        refineLoading.classList.add('active');
         refinementRequests.push({text: instruction, time: nowTime()});
         renderRefineHistory();
         if (!conversationHistory.length) {
@@ -2076,6 +2644,7 @@
             const html = extractHTML(raw);
             if (!html) throw new Error('Invalid HTML in response');
             generatedHTML = html;
+            hasUnsavedChanges = true;
             conversationHistory.push({role: 'assistant', content: html});
             while (conversationHistory.length > 14) conversationHistory.splice(2, 2);
             renderIframe(previewFrame, html);
@@ -2085,8 +2654,9 @@
                 codeTextarea.value = html;
                 updateLineNumbers();
             }
-            // Auto-save after refinement
-            if (currentGalleryId) saveToGallery(previewAppName.value || 'My App', originalPrompt, html);
+            if (currentGalleryId) {
+                saveToGallery(previewAppName.value || 'My App', originalPrompt, html);
+            }
         } catch (err) {
             showToast('Refinement failed: ' + err.message);
             conversationHistory.pop();
@@ -2094,6 +2664,8 @@
             refineBtn.disabled = false;
             refineBtn.textContent = 'Refine';
             refineInput.value = '';
+            refineInput.style.height = 'auto';
+            refineLoading.classList.remove('active');
         }
     }
 
@@ -2104,6 +2676,13 @@
             refineApp(refineInput.value);
         }
     });
+    document.querySelectorAll('.suggestion-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            refineInput.value = chip.textContent;
+            refineInput.focus();
+            autoResizeRefine();
+        });
+    });
     $('startOverBtn').addEventListener('click', () => {
         conversationHistory = [];
         refinementRequests = [];
@@ -2111,7 +2690,6 @@
         showToast('Refinement history cleared');
     });
 
-// ===== System Prompt =====
     function buildSystemPrompt(isRefinement) {
         const scheme = $('colorScheme').value;
         const complexity = $('complexity').value;
@@ -2122,7 +2700,6 @@
         return base;
     }
 
-// ===== Create App =====
     async function createApp() {
         const description = desc.value.trim();
         if (!description) return;
@@ -2146,6 +2723,7 @@
             const html = extractHTML(raw);
             if (!html) throw new Error('Response did not contain valid HTML');
             generatedHTML = html;
+            hasUnsavedChanges = true;
             stopProgress();
             const title = extractTitle(html);
             previewAppName.value = title;
@@ -2156,7 +2734,7 @@
         } catch (err) {
             stopProgress();
             setState('creator');
-            apiError.innerHTML = 'Error: ' + escHtml(err.message) + '. <button onclick="document.getElementById(\'apiError\').style.display=\'none\';document.getElementById(\'createBtn\').click()">Try Again</button>';
+            apiError.innerHTML = 'Error: ' + escHtml(err.message) + '.<button onclick="document.getElementById(\'apiError\').style.display=\'none\';document.getElementById(\'createBtn\').click()">Try Again</button>';
             apiError.style.display = 'block';
         } finally {
             createBtn.disabled = !desc.value.trim();
@@ -2164,7 +2742,6 @@
         }
     }
 
-// ===== Enhance Prompt =====
     async function enhancePrompt() {
         const text = desc.value.trim();
         if (!text) return;
@@ -2172,13 +2749,10 @@
         enhanceBtn.disabled = true;
         enhanceBtn.textContent = 'Enhancing\u2026';
         try {
-            const data = await callLLM([
-                {
-                    role: 'system',
-                    content: 'You are a prompt enhancement assistant. Take the user\'s brief app description and expand it into a detailed, specific prompt that will produce a better AI-generated app. Add details about layout, features, interactions, visual style, and edge cases. Keep it to 2-4 sentences. Output ONLY the enhanced prompt text, nothing else.'
-                },
-                {role: 'user', content: text}
-            ], {maxTokens: 500, temperature: 0.7});
+            const data = await callLLM([{
+                role: 'system',
+                content: 'You are a prompt enhancement assistant. Take the user\'s brief app description and expand it into a detailed, specific prompt that will produce a better AI-generated app. Add details about layout, features, interactions, visual style, and edge cases. Keep it to 2-4 sentences. Output ONLY the enhanced prompt text, nothing else.'
+            }, {role: 'user', content: text}], {maxTokens: 500, temperature: 0.7});
             const enhanced = data.choices?.[0]?.message?.content;
             if (!enhanced) throw new Error('Empty response');
             desc.value = enhanced.trim();
@@ -2204,8 +2778,7 @@
         }
     });
 
-// ===== PWA Export =====
-    $('pwaExportBtn').addEventListener('click', () => {
+    function doPwaExport() {
         if (!generatedHTML) {
             showToast('No app to export');
             return;
@@ -2227,8 +2800,7 @@
         const manifestDataUri = 'data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(manifest))));
         const swCode = 'const CN="' + sanitizeFilename(appName) + '-v1";self.addEventListener("install",e=>{e.waitUntil(caches.open(CN).then(c=>c.add(self.location.href.replace(/\\/sw\\.js.*/,""))));self.skipWaiting()});self.addEventListener("fetch",e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))});self.addEventListener("activate",e=>{e.waitUntil(clients.claim())});';
         const pwaInject = '\n<link rel="manifest" href="' + manifestDataUri + '">\n<meta name="theme-color" content="#2563eb">\n<meta name="apple-mobile-web-app-capable" content="yes">\n<meta name="apple-mobile-web-app-title" content="' + escHtml(appName) + '">\n<link rel="apple-touch-icon" href="' + iconDataUri + '">\n<link rel="icon" href="' + iconDataUri + '">\n<script>\nif("serviceWorker"in navigator){const b=new Blob([' + JSON.stringify(swCode) + '],{type:"application/javascript"});navigator.serviceWorker.register(URL.createObjectURL(b),{scope:"."}).catch(()=>{});}\n<\/script>\n';
-        if (html.includes('</head>')) html = html.replace('</head>', pwaInject + '</head>');
-        else html = pwaInject + html;
+        if (html.includes('</head>')) html = html.replace('</head>', pwaInject + '</head>'); else html = pwaInject + html;
         const name = sanitizeFilename(appName);
         const blob = new Blob([html], {type: 'text/html'});
         const a = document.createElement('a');
@@ -2237,9 +2809,36 @@
         a.click();
         URL.revokeObjectURL(a.href);
         showToast('PWA exported \u2014 serve via HTTPS & add to home screen');
-    });
+    }
 
-// ===== Version History =====
+    function doDownload() {
+        if (!generatedHTML) return;
+        const name = sanitizeFilename(previewAppName.value);
+        const blob = new Blob([generatedHTML], {type: 'text/html'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = name + '.html';
+        a.click();
+        URL.revokeObjectURL(a.href);
+    }
+
+    $('downloadBtnOv').addEventListener('click', (e) => {
+        e.stopPropagation();
+        overflowMenu.classList.remove('open');
+        doDownload();
+    });
+    $('pwaExportBtnOv').addEventListener('click', (e) => {
+        e.stopPropagation();
+        overflowMenu.classList.remove('open');
+        doPwaExport();
+    });
+    $('overflowBtn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        overflowMenu.classList.toggle('open');
+    });
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#overflowBtn')) overflowMenu.classList.remove('open');
+    });
     $('historyBtn').addEventListener('click', (e) => {
         e.stopPropagation();
         const dd = versionDropdown;
@@ -2274,6 +2873,7 @@
                         codeTextarea.value = html;
                         updateLineNumbers();
                     }
+                    hasUnsavedChanges = true;
                     showToast('Loaded version ' + (app.versions.length - i));
                 } catch {
                     showToast('Failed to load version');
@@ -2287,13 +2887,60 @@
     document.addEventListener('click', (e) => {
         if (!e.target.closest('#historyBtn')) versionDropdown.classList.remove('open');
     });
-
-// ===== API Settings Modal =====
     const apiModal = $('apiSettingsModal');
     const apiKeyInput = $('apiKeyInput');
     const apiEndpointInput = $('apiEndpointInput');
     const apiModelInput = $('apiModelInput');
     const apiTestResult = $('apiTestResult');
+
+    function trapFocus(modal) {
+        const focusable = modal.querySelectorAll('button,input,select,textarea,[tabindex]:not([tabindex="-1"])');
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        first.focus();
+        modal._trapHandler = function (e) {
+            if (e.key === 'Tab') {
+                if (e.shiftKey) {
+                    if (document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    }
+                } else {
+                    if (document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                }
+            }
+        };
+        modal.addEventListener('keydown', modal._trapHandler);
+    }
+
+    function releaseFocus(modal) {
+        if (modal._trapHandler) {
+            modal.removeEventListener('keydown', modal._trapHandler);
+            delete modal._trapHandler;
+        }
+    }
+
+    function openModal(overlay, triggerEl) {
+        overlay.classList.add('open');
+        overlay._trigger = triggerEl;
+        trapFocus(overlay.querySelector('.modal'));
+    }
+
+    function closeModal(overlay) {
+        overlay.classList.remove('open');
+        releaseFocus(overlay.querySelector('.modal'));
+        if (overlay._trigger) {
+            try {
+                overlay._trigger.focus();
+            } catch (e) {
+            }
+            delete overlay._trigger;
+        }
+    }
 
     function openApiSettings() {
         const config = loadApiConfig() || {};
@@ -2302,15 +2949,14 @@
         apiModelInput.value = config.model || 'gpt-4o-mini';
         apiTestResult.className = 'test-result';
         apiTestResult.textContent = '';
-        apiModal.classList.add('open');
+        openModal(apiModal, $('apiSettingsLink'));
     }
 
     $('apiSettingsLink').addEventListener('click', openApiSettings);
-    $('apiCloseBtn').addEventListener('click', () => apiModal.classList.remove('open'));
+    $('apiCloseBtn').addEventListener('click', () => closeModal(apiModal));
     apiModal.addEventListener('click', (e) => {
-        if (e.target === apiModal) apiModal.classList.remove('open');
+        if (e.target === apiModal) closeModal(apiModal);
     });
-
     $('apiSaveBtn').addEventListener('click', () => {
         const key = apiKeyInput.value.trim();
         if (!key) {
@@ -2323,10 +2969,9 @@
             model: apiModelInput.value.trim() || 'gpt-4o-mini'
         });
         updateApiBadge();
-        apiModal.classList.remove('open');
+        closeModal(apiModal);
         showToast('API settings saved');
     });
-
     $('apiClearBtn').addEventListener('click', () => {
         saveApiConfig(null);
         apiKeyInput.value = '';
@@ -2337,7 +2982,6 @@
         updateApiBadge();
         showToast('API settings cleared');
     });
-
     $('apiTestBtn').addEventListener('click', async () => {
         const key = apiKeyInput.value.trim();
         const endpoint = apiEndpointInput.value.trim() || 'https://api.openai.com/v1/chat/completions';
@@ -2351,7 +2995,8 @@
         $('apiTestBtn').textContent = 'Testing\u2026';
         try {
             const res = await fetch(endpoint, {
-                method: 'POST', headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key},
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key},
                 body: JSON.stringify({model, max_tokens: 10, messages: [{role: 'user', content: 'Say OK'}]})
             });
             if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -2369,10 +3014,12 @@
         }
     });
 
-// ===== Share =====
     function generateQR(text, container) {
         container.innerHTML = '';
-        if (text.length > 4000) return;
+        if (text.length > 4000) {
+            container.innerHTML = '<div class="qr-fallback">App is too large for QR code. Use the link instead.</div>';
+            return;
+        }
         try {
             const qr = qrcode(0, 'L');
             qr.addData(text);
@@ -2385,6 +3032,7 @@
                 svg.style.borderRadius = '8px';
             }
         } catch {
+            container.innerHTML = '<div class="qr-fallback">Could not generate QR code. Use the link instead.</div>';
         }
     }
 
@@ -2396,53 +3044,106 @@
         const kb = (compressed.length / 1024).toFixed(1);
         urlSize.textContent = kb + 'KB compressed';
         urlWarning.style.display = url.length > MAX_URL ? 'block' : 'none';
+        $('urlDetails').classList.remove('open');
+        $('urlDetailsToggle').innerHTML = 'Show URL details &#x25BC;';
         generateQR(url, qrContainer);
-        shareModal.classList.add('open');
+        openModal(shareModal, $('shareBtn'));
+    });
+    $('urlDetailsToggle').addEventListener('click', () => {
+        const det = $('urlDetails');
+        const open = det.classList.toggle('open');
+        $('urlDetailsToggle').innerHTML = open ? 'Hide URL details &#x25B2;' : 'Show URL details &#x25BC;';
     });
     $('copyShareUrl').addEventListener('click', () => {
         navigator.clipboard.writeText(shareUrlEl.textContent).then(() => showToast('Link copied!'));
     });
-    $('closeModal').addEventListener('click', () => shareModal.classList.remove('open'));
-    shareModal.addEventListener('click', (e) => {
-        if (e.target === shareModal) shareModal.classList.remove('open');
+    $('openShareTab').addEventListener('click', () => {
+        window.open(shareUrlEl.textContent, '_blank');
     });
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            shareModal.classList.remove('open');
-            apiModal.classList.remove('open');
-        }
+    $('closeModal').addEventListener('click', () => closeModal(shareModal));
+    shareModal.addEventListener('click', (e) => {
+        if (e.target === shareModal) closeModal(shareModal);
     });
 
-// ===== Save / Download / New =====
-    $('saveBtn').addEventListener('click', () => {
-        saveToGallery(previewAppName.value || 'My App', originalPrompt, generatedHTML);
+    function showConfirmNew() {
+        if (!hasUnsavedChanges) {
+            doNewApp();
+            return;
+        }
+        openModal(confirmModal, $('newAppBtn'));
+    }
+
+    $('confirmDiscard').addEventListener('click', () => {
+        closeModal(confirmModal);
+        doNewApp();
     });
-    $('downloadBtn').addEventListener('click', () => {
-        const name = sanitizeFilename(previewAppName.value);
-        const blob = new Blob([generatedHTML], {type: 'text/html'});
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = name + '.html';
-        a.click();
-        URL.revokeObjectURL(a.href);
+    $('confirmCancel').addEventListener('click', () => closeModal(confirmModal));
+    confirmModal.addEventListener('click', (e) => {
+        if (e.target === confirmModal) closeModal(confirmModal);
     });
-    $('newAppBtn').addEventListener('click', () => {
+
+    function doNewApp() {
         generatedHTML = '';
         currentGalleryId = null;
         conversationHistory = [];
         refinementRequests = [];
+        hasUnsavedChanges = false;
         previewFrame.srcdoc = '';
         codeEditor.classList.remove('open');
         $('codeToggleBtn').classList.remove('active');
+        collapseRefineHistory(false);
         renderGallery();
         setState('creator');
-    });
+    }
 
-// ===== Shared View =====
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (shareModal.classList.contains('open')) {
+                closeModal(shareModal);
+                return;
+            }
+            if (apiModal.classList.contains('open')) {
+                closeModal(apiModal);
+                return;
+            }
+            if (confirmModal.classList.contains('open')) {
+                closeModal(confirmModal);
+                return;
+            }
+            if (codeEditor.classList.contains('open')) {
+                codeEditor.classList.remove('open');
+                $('codeToggleBtn').classList.remove('active');
+                collapseRefineHistory(false);
+                return;
+            }
+        }
+    });
+    $('saveBtn').addEventListener('click', () => {
+        saveToGallery(previewAppName.value || 'My App', originalPrompt, generatedHTML);
+    });
+    $('newAppBtn').addEventListener('click', showConfirmNew);
+    document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+            if (body.classList.contains('state-preview')) {
+                e.preventDefault();
+                saveToGallery(previewAppName.value || 'My App', originalPrompt, generatedHTML);
+            }
+        }
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+            if (body.classList.contains('state-creator') && desc.value.trim()) {
+                e.preventDefault();
+                createApp();
+            }
+        }
+    });
+    window.addEventListener('beforeunload', (e) => {
+        if (hasUnsavedChanges) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
     $('viewSourceBtn').addEventListener('click', () => sourcePanel.classList.toggle('open'));
     $('closeSourceBtn').addEventListener('click', () => sourcePanel.classList.remove('open'));
-
-// ===== Textarea =====
     desc.addEventListener('input', () => {
         createBtn.disabled = !desc.value.trim();
         enhanceBtn.disabled = !desc.value.trim();
@@ -2453,19 +3154,8 @@
         }
     });
     createBtn.addEventListener('click', createApp);
-
-// Keyboard shortcut
     $('shortcutHint').textContent = isMac ? '\u2318\u21B5' : 'Ctrl+\u21B5';
-    document.addEventListener('keydown', (e) => {
-        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-            if (body.classList.contains('state-creator') && desc.value.trim()) {
-                e.preventDefault();
-                createApp();
-            }
-        }
-    });
 
-// ===== Templates =====
     function renderTemplates() {
         const scroll = $('templatesScroll');
         templates.forEach(t => {
@@ -2481,9 +3171,36 @@
             });
             scroll.appendChild(card);
         });
+        updateScrollArrows();
     }
 
-// ===== Onboarding =====
+    (function initTemplateScroll() {
+        const wrapper = $('templatesWrapper');
+        const scroll = $('templatesScroll');
+        const leftBtn = $('scrollLeft');
+        const rightBtn = $('scrollRight');
+        scroll.addEventListener('scroll', updateScrollArrows);
+        window.addEventListener('resize', updateScrollArrows);
+        leftBtn.addEventListener('click', () => {
+            scroll.scrollBy({left: -220, behavior: 'smooth'});
+        });
+        rightBtn.addEventListener('click', () => {
+            scroll.scrollBy({left: 220, behavior: 'smooth'});
+        });
+    })();
+
+    function updateScrollArrows() {
+        const wrapper = $('templatesWrapper');
+        const scroll = $('templatesScroll');
+        const leftBtn = $('scrollLeft');
+        const rightBtn = $('scrollRight');
+        const atStart = scroll.scrollLeft <= 10;
+        const atEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 10;
+        leftBtn.classList.toggle('hidden', atStart);
+        rightBtn.classList.toggle('hidden', atEnd);
+        wrapper.classList.toggle('scrolled-end', atEnd);
+    }
+
     function checkOnboarding() {
         if (!localStorage.getItem(ONBOARD_KEY)) {
             $('onboardingHint').style.display = 'flex';
@@ -2495,7 +3212,6 @@
         localStorage.setItem(ONBOARD_KEY, '1');
     });
 
-// ===== Check Hash =====
     function checkHash() {
         const hash = location.hash;
         if (!hash || !hash.startsWith('#code=')) return false;
@@ -2515,7 +3231,6 @@
         }
     }
 
-// ===== Init =====
     function init() {
         if (checkHash()) return;
         setState('creator');
@@ -2525,6 +3240,7 @@
         autoResize();
         updateApiBadge();
         enhanceBtn.disabled = !desc.value.trim();
+        iframeLoading.classList.add('hidden');
     }
 
     init();
